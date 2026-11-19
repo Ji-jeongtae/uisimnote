@@ -44,7 +44,7 @@ const NEXT_COND = {
   recent: { label: '최신 동향', text: '네가 알고 있는 정보의 기준 시점을 밝혀 줘.' },
 };
 const TYPE_COND = { '통계·수치': 'stat', '논문·책 인용': 'cite', '인물·기관 발언': 'who', '날짜·법령': 'date', '일반화': 'gen', '인과관계': 'gen', '최신 동향': 'recent' };
-const TOOLS = ['ChatGPT (무료)', 'ChatGPT (유료)', 'Gemini', 'Claude', 'Microsoft Copilot', '뤼튼', 'Perplexity', '기타'];
+const TOOLS = ['ChatGPT', 'Gemini', 'Claude', 'DeepSeek', 'Microsoft Copilot', '뤼튼', 'Perplexity', '기타'];
 
 /* ---------- 저장소 (실패해도 동작) ---------- */
 const store = {
@@ -106,6 +106,8 @@ for (const id of state.selected || []) {
   const s = (state.sentences || []).find((x) => x.id === id);
   if (s && !state.marks[id]?.length) state.marks[id] = [{ start: 0, end: s.text.length }];
 }
+// 예전 'ChatGPT (무료)/(유료)'는 'ChatGPT' 하나로
+if (state.meta.tool?.startsWith('ChatGPT')) state.meta.tool = 'ChatGPT';
 // 예전 '날짜·제도'(date) 칩은 합쳐진 '숫자·날짜·제도'(num)로 옮긴다.
 const mergeDate = (list) => [...new Set(list.map((k) => (k === 'date' ? 'num' : k)))];
 for (const [id, r] of Object.entries(state.reasons || {})) {
@@ -498,7 +500,7 @@ function viewStep1() {
       <label class="field"><span>사용 날짜</span>
         <input type="date" data-bind="meta.date" value="${esc(m.date)}"></label>
     </div>
-    <label class="field" style="margin-bottom:0"><span>활용 목적 및 범위 <em>필수 · 직접 쓰기</em></span>
+    <label class="field" style="margin-bottom:0"><span>활용 목적 및 범위 <em>필수 · ${state.purposeAuto ? '질문을 보고 추측해서 넣었어요, 고쳐 써도 돼요' : '[확인]을 누르면 추측해서 채워요'}</em></span>
       <input type="text" data-bind="meta.purpose" value="${esc(m.purpose)}" maxlength="200" placeholder="예: 선행 연구 자료 조사의 아이디어 단계"></label>
   </div>
   <p class="side-note">개인정보·공개되지 않은 과제 내용은 넣지 마세요. 무료 Gemini API에 보낸 내용은 Google 제품 개선에 쓰일 수 있어요.</p>`;
@@ -507,13 +509,14 @@ function viewStep1() {
     <span class="nav-status">AI 대화 붙여넣기</span>
     <button class="primary small-btn" data-action="to-2">다음: 먼저 의심하기 →</button>
   </div>
-  <label class="field answer-field"><span>AI 답변 <em>대화 전체를 붙여 넣어도 돼요 · 20,000자까지</em></span>
-    <textarea class="answer-input" data-bind="answer" maxlength="20000" placeholder="AI와 나눈 대화를 질문부터 답변까지 그대로 붙여 넣으세요.&#10;&#10;예)&#10;나의 말:&#10;CJ ENM 글로벌 전략 자료 조사해 줘&#10;ChatGPT의 말:&#10;스튜디오드래곤은 …">${esc(state.answer)}</textarea>
+  <label class="field answer-field"><span>AI 대화 <em>AI에게 한 질문부터 답변까지 함께 붙여 넣으세요 · 20,000자까지</em></span>
+    <textarea class="answer-input" data-bind="answer" maxlength="20000" placeholder="AI에게 한 질문과 받은 답변을 함께 붙여 넣은 뒤 [확인]을 누르세요.&#10;&#10;예)&#10;나의 말:&#10;CJ ENM 글로벌 전략 자료 조사해 줘&#10;ChatGPT의 말:&#10;스튜디오드래곤은 …">${esc(state.answer)}</textarea>
   </label>
   <div class="answer-foot">
     <span class="ex-label">예시</span>
     ${EXAMPLES.map((ex) => `<button class="small-btn ghost" data-action="load-demo" data-key="${ex.key}">${esc(ex.label)}</button>`).join('')}
     <span class="spacer"></span>
+    <button class="primary small-btn" data-action="confirm-paste">확인 — 정보 채우기</button>
     <span class="count" id="answer-count">${state.answer.length.toLocaleString()} / 20,000자</span>
   </div>`;
   return splitView(head, main, side);
@@ -523,11 +526,12 @@ function viewStep1() {
    ChatGPT 웹에서 대화를 드래그해 복사하면 "나의 말:" / "ChatGPT의 말:"(영문 "You said:" / "ChatGPT said:") 줄로 나뉜다.
    그 표시가 있을 때만 나눈다. 질문 = 첫 번째 내 말, 답변 = AI 답변 전체(여러 번이면 이어 붙임). */
 const USER_MARK = /^\s*(나의 말|내 말|You said|사용자|User|질문)\s*[:：]?\s*$/i;
-const AI_MARK = /^\s*(ChatGPT의 말|ChatGPT said|ChatGPT|Gemini의 응답|Gemini said|Gemini|Claude|Copilot said|Copilot|Perplexity|뤼튼|답변)\s*[:：]?\s*$/i;
+const AI_MARK = /^\s*(ChatGPT의 말|ChatGPT said|ChatGPT|Gemini의 응답|Gemini said|Gemini|Claude|Copilot said|Copilot|Perplexity|뤼튼|DeepSeek|딥시크|답변)\s*[:：]?\s*$/i;
 const UI_JUNK = /^\s*(ChatGPT는 실수를 할 수 있습니다|ChatGPT can make mistakes|출처$|Sources$|복사$|Copy$|공유하기$|Share$)/i;
 const TOOL_OF = (mark) => {
   const m = mark.toLowerCase();
-  if (m.includes('chatgpt')) return state.meta.tool.startsWith('ChatGPT') ? state.meta.tool : 'ChatGPT (무료)';
+  if (m.includes('chatgpt')) return 'ChatGPT';
+  if (m.includes('deepseek') || m.includes('딥시크')) return 'DeepSeek';
   if (m.includes('gemini')) return 'Gemini';
   if (m.includes('claude')) return 'Claude';
   if (m.includes('copilot')) return 'Microsoft Copilot';
@@ -630,6 +634,9 @@ function viewStep2() {
   ${locked
     ? `<p class="lead">AI 표시와 비교한 결과예요. 내가 놓친 문장과 확인 방법을 위에 정리했어요. 처음 고른 형광펜은 바꿀 수 없어요${state.doubtLog ? ` (${fmtTime(state.doubtLog.at)} 기록)` : ''}.</p>`
     : `<p class="lead"><strong>${hasCandidates() ? `AI 답변 전문(${state.sentences.length}문장)에서 확인해 볼 만한 문장 ${visibleSentences().length}개를 골랐어요. 의심되는 부분에 형광펜을 그어 보세요.` : '확인하고 써야 할 부분에 형광펜을 그어 보세요.'}</strong></p>`}`;
+  if (state.candidatesPending) {
+    return splitView(head, `<div class="panel skel" aria-busy="true"><p class="skel-msg">문장을 선별하고 있어요…</p>${'<div class="skel-line"></div><div class="skel-line short"></div>'.repeat(MAX_CANDIDATES)}</div>`, `<div class="side-nav"><button class="small-btn" data-action="go" data-step="1">← 이전</button><span class="nav-status">문장을 선별하고 있어요…</span></div>`);
+  }
   const main = `
   ${hintCard(locked)}
   <div class="panel">
@@ -1222,13 +1229,15 @@ async function classify() {
       pendingReveal = true;
       return;
     }
-    const res = await fetch('api/classify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: state.meta.question, sentences: visibleSentences().map(({ id, text }) => { const c = hasCandidates() ? contextOf(state.sentences, id) : ''; return { id, text: c ? `[${c}] ${text}` : text }; }) }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || `서버 오류 (${res.status})`);
+    const key = `${state.answer.trim()}|${(state.candidates || []).join(',')}`;
+    let r = prefetch?.key === key ? await prefetch.p : null;
+    prefetch = null;
+    if (!r || !r.ok) {
+      const res = await fetch('api/classify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: classifyBody() });
+      r = { ok: res.ok, status: res.status, data: await res.json().catch(() => ({})) };
+    }
+    const data = r.data;
+    if (!r.ok) throw new Error(data.error || `서버 오류 (${r.status})`);
     state.ai = { items: data.items, model: data.model, promptVersion: data.promptVersion, at: data.at };
     pendingReveal = true;
     document.getElementById('engine-info').textContent = `분류 엔진: ${data.model} · 프롬프트 ${data.promptVersion} · 제작: 팀 더블체크 (Claude·Claude Code로 개발)`;
@@ -1255,42 +1264,16 @@ const actions = {
       toast('예시 답변을 불러왔습니다.');
     } catch { toast('예시를 불러오지 못했습니다.'); }
   },
+  'confirm-paste'() { confirmPaste(); },
   'to-2'() {
-    const conv = parseConversation(state.answer);
-    if (conv) { applyConversation(conv); return; }
+    if (state.answer.trim() && state.answer.trim() !== state.confirmedFor) confirmPaste(true);
     const text = state.answer.trim();
     if (!text) { toast('AI 답변을 붙여 넣어 주세요.'); return; }
     if (!state.meta.purpose.trim()) { toast('활용 목적 및 범위를 적어 주세요.'); document.querySelector('[data-bind="meta.purpose"]')?.focus(); return; }
     const url = state.meta.shareUrl.trim();
     if (url && !/^https?:\/\//i.test(url)) { toast('대화 공유 URL은 http:// 또는 https://로 시작해야 합니다.'); return; }
-    if (text !== state.sourceAnswer) {
-      state.sentences = splitSentences(text);
-      state.sourceAnswer = text;
-      state.selected = [];
-      state.ai = null;
-      state.verify = {};
-      state.doubtLog = null;
-      state.summary = '';
-      state.memo = '';
-      state.conclusion = '';
-      state.compared = '';
-      state.reasons = {};
-      state.reasonNotes = {};
-      state.marks = {};
-      state.autoReasons = {};
-      state.nextQ = null;
-      state.keepMine = {};
-      state.sessionId = `s${Date.now().toString(36)}`;
-      state.maxStep = 2;
-    }
-    if (text !== state.candidatesFor && !state.ai) { // 이미 AI 표시를 본 작업은 대상 문장을 바꾸지 않는다
-      // 예시는 저장된 후보, 그 밖에는 규칙으로 고른다. 답변이 짧으면(후보 수 이하) 전체를 보여 준다.
-      const ex = cachedExample(state.answer);
-      const picked = ex?.candidates || (state.sentences.length > MAX_CANDIDATES ? pickCandidates(state.sentences) : []);
-      state.candidates = picked.length ? picked : null;
-      state.candidatesFor = text;
-    }
-    if (!hasCandidates() && state.sentences.length > 80) { toast('확인해 볼 문장을 고르지 못했고 문장이 너무 많습니다. 80문장 이하로 나눠서 넣어 주세요.'); return; }
+    prepareSession();
+    if (!state.candidatesPending && !hasCandidates() && state.sentences.length > 80) { toast('확인해 볼 문장을 고르지 못했고 문장이 너무 많습니다. 80문장 이하로 나눠서 넣어 주세요.'); return; }
     advance(2);
   },
   'to-3'() {
@@ -1586,7 +1569,7 @@ function setPath(obj, path, value) {
 /* ---------- 대화 공유 URL → 사용한 AI 도구 ----------
    공유 페이지의 대화 내용은 읽을 수 없다(ChatGPT는 브라우저가 아닌 요청에 내용 없는 안내 페이지만 줌, 2026-11-19 확인).
    링크 주소로 도구만 채우고, 공유 페이지를 열어 대화를 드래그해 붙여 넣도록 안내한다(붙여넣기는 parseConversation이 나눔). */
-const TOOL_FROM_SHARE = { ChatGPT: () => (state.meta.tool.startsWith('ChatGPT') ? state.meta.tool : 'ChatGPT (무료)'), Gemini: () => 'Gemini', Claude: () => 'Claude', Perplexity: () => 'Perplexity', Copilot: () => 'Microsoft Copilot' };
+const TOOL_FROM_SHARE = { ChatGPT: () => 'ChatGPT', Gemini: () => 'Gemini', Claude: () => 'Claude', Perplexity: () => 'Perplexity', Copilot: () => 'Microsoft Copilot' };
 let shareLast = '';
 function scheduleShare(value) {
   const chk = checkShareUrl(value);
@@ -1606,6 +1589,89 @@ function shareNote(v) {
   return `<a class="small-btn" href="${esc(chk.url)}" target="_blank" rel="noopener noreferrer">공유 페이지 열기 ↗</a> <span class="muted small">열린 페이지에서 대화를 드래그해 오른쪽 칸에 붙여 넣으면 질문·답변이 채워져요.</span>`;
 }
 
+/* ---------- [확인]: 붙여 넣은 대화 → 증빙서 정보 + 의심 후보 + 분류 미리 시작 ---------- */
+// "나의 말/ChatGPT의 말" 표시가 없을 때: 첫 단락(또는 첫 줄)이 요청·질문처럼 끝나면 질문으로 본다
+function guessConversation(text) {
+  const t = String(text || '').replace(/\r\n/g, '\n').trim();
+  const ASK = /(\?|줘|주세요|알려줘|해줘|정리해|짜줘|써줘|할까|인가요|나요|까요|해요|하세요)[.!\s]*$/;
+  const blocks = t.split(/\n\s*\n/);
+  if (blocks.length > 1 && blocks[0].length <= 600 && ASK.test(blocks[0].trim())) return { question: blocks[0].trim(), answer: blocks.slice(1).join('\n\n').trim(), tool: null, turns: 1 };
+  const lines = t.split('\n');
+  if (lines.length > 3 && lines[0].length <= 300 && ASK.test(lines[0].trim())) return { question: lines[0].trim(), answer: lines.slice(1).join('\n').trim(), tool: null, turns: 1 };
+  return null;
+}
+// 활용 목적 추측(질문의 낱말로): 학생이 고쳐 쓰는 출발점
+function guessPurpose(q) {
+  const t = String(q || '');
+  const course = (t.match(/([가-힣A-Za-z]{2,15})\s*(과목|수업|강의)/) || [])[1];
+  const kind = /(발표|PPT|피피티|슬라이드)/i.test(t) ? '발표 자료(PPT) 구성을 위한 자료 조사'
+    : /(레포트|리포트|보고서|과제)/.test(t) ? '레포트 작성을 위한 선행 자료 조사'
+    : /(논문|연구|선행)/.test(t) ? '선행 연구 탐색'
+    : '자료 조사';
+  return `${course ? `${course} ` : ''}${kind}의 아이디어 단계에서 참고용으로 활용`;
+}
+// 문장 나누기·초기화·의심 후보 고르기(비동기) — '다음'과 [확인]이 함께 쓴다
+let prefetch = null;
+function prepareSession() {
+  const text = state.answer.trim();
+  if (text !== state.sourceAnswer) {
+    state.sentences = splitSentences(text);
+    state.sourceAnswer = text;
+    state.selected = []; state.ai = null; state.verify = {}; state.doubtLog = null;
+    state.summary = ''; state.memo = ''; state.conclusion = ''; state.compared = '';
+    state.reasons = {}; state.reasonNotes = {}; state.marks = {}; state.autoReasons = {};
+    state.nextQ = null; state.keepMine = {};
+    state.sessionId = `s${Date.now().toString(36)}`;
+    state.maxStep = 2;
+  }
+  if (text !== state.candidatesFor && !state.ai) {
+    state.candidatesPending = true;
+    state.candidatesFor = text;
+    setTimeout(() => {
+      const ex = cachedExample(state.answer);
+      const picked = ex?.candidates || (state.sentences.length > MAX_CANDIDATES ? pickCandidates(state.sentences) : []);
+      state.candidates = picked.length ? picked : null;
+      state.candidatesPending = false;
+      save();
+      prefetchClassify();
+      if (state.step === 2) render(false);
+    }, 0);
+  }
+}
+const classifyBody = () => JSON.stringify({ question: state.meta.question, sentences: visibleSentences().map(({ id, text }) => { const c = hasCandidates() ? contextOf(state.sentences, id) : ''; return { id, text: c ? `[${c}] ${text}` : text }; }) });
+// 3단계 분류를 미리 시작(결과는 3단계 전까지 화면에 쓰지 않는다). 예시 답변은 저장된 결과를 쓰므로 건너뜀.
+function prefetchClassify() {
+  if (cachedExample(state.answer) || !state.sentences.length) return;
+  const key = `${state.answer.trim()}|${(state.candidates || []).join(',')}`;
+  if (prefetch?.key === key) return;
+  const p = fetch('api/classify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: classifyBody() })
+    .then(async (res) => ({ ok: res.ok, status: res.status, data: await res.json().catch(() => ({})) }))
+    .catch(() => null);
+  prefetch = { key, p };
+}
+function confirmPaste(quiet = false) {
+  const raw = state.answer.trim();
+  if (!raw) { toast('AI에게 한 질문과 답변을 붙여 넣어 주세요.'); return false; }
+  const conv = parseConversation(raw) || guessConversation(raw);
+  if (conv) {
+    state.answer = conv.answer.slice(0, 20000);
+    if (conv.question) state.meta.question = conv.question.slice(0, 500);
+    if (conv.tool) state.meta.tool = conv.tool;
+    if (conv.share && !state.meta.shareUrl) state.meta.shareUrl = conv.share;
+  }
+  state.meta.date = today();
+  if (!state.meta.purpose.trim() || state.purposeAuto) { state.meta.purpose = guessPurpose(state.meta.question); state.purposeAuto = true; }
+  state.autoFilled = true;
+  state.confirmedFor = state.answer.trim();
+  prepareSession();
+  save();
+  if (!quiet) {
+    render(false);
+    toast(`확인했어요. ${conv?.question ? '질문·' : ''}${conv?.tool ? '도구·' : ''}날짜·활용 목적을 채웠어요. 의심해 볼 문장 ${MAX_CANDIDATES}개를 고르고 있어요.${conv?.question ? '' : ' (질문을 못 찾았어요. 원래 질문 칸을 확인해 주세요)'}`);
+  }
+  return true;
+}
+
 function applyConversation(conv) {
   state.answer = conv.answer.slice(0, 20000);
   if (conv.question) state.meta.question = conv.question.slice(0, 500);
@@ -1621,11 +1687,8 @@ function applyConversation(conv) {
 $view.addEventListener('paste', (e) => {
   const ta = e.target.closest?.('textarea[data-bind="answer"]');
   if (!ta) return;
-  const text = e.clipboardData?.getData('text') || '';
-  const conv = parseConversation(text);
-  if (!conv) return;
-  e.preventDefault();
-  applyConversation(conv);
+  // 붙여 넣는 순간에는 바꾸지 않는다. [확인]을 누르면 질문·답변을 나눈다.
+  return;
 });
 
 $view.addEventListener('input', (e) => {
@@ -1652,6 +1715,7 @@ $view.addEventListener('input', (e) => {
   if (el.dataset.bind) {
     setPath(state, el.dataset.bind, el.value);
     if (el.dataset.bind === 'meta.shareUrl') scheduleShare(el.value);
+    if (el.dataset.bind === 'meta.purpose') state.purposeAuto = false;
     if (el.dataset.bind === 'answer') document.getElementById('answer-count').textContent = `${el.value.length.toLocaleString()} / 20,000자`;
     if (el.dataset.bind === 'summary') document.getElementById('summary-count').textContent = `${el.value.length} / 150자`;
     if (el.dataset.bind === 'summary' || el.dataset.bind === 'conclusion') {
@@ -1738,5 +1802,11 @@ document.getElementById('stepper').addEventListener('click', (e) => {
 
 /* 새로고침 중 로딩 상태였다면 다시 2단계로 */
 if (state.step === 3 && !state.ai) state.step = 2;
+/* 후보를 고르는 도중에 새로고침했다면 여기서 마저 고른다(스켈레톤에 멈추지 않게) */
+if (state.candidatesPending) {
+  const picked = state.sentences?.length > MAX_CANDIDATES ? pickCandidates(state.sentences) : [];
+  state.candidates = picked.length ? picked : null;
+  state.candidatesPending = false;
+}
 if (DEMO) loadDemo().catch(() => {});
 render(false);

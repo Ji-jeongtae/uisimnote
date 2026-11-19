@@ -3,7 +3,7 @@
   "source": "gemini",
   "meta": {
     "question": "생성형 AI가 만든 학술 인용은 얼마나 정확한지 레포트용으로 정리해 줘",
-    "tool": "ChatGPT (무료)",
+    "tool": "ChatGPT",
     "date": "2026-11-19",
     "toolVersion": "GPT-5",
     "purpose": "레포트 선행 연구 자료 조사의 아이디어 단계",

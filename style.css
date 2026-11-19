@@ -674,3 +674,10 @@ label.field > span { margin-bottom: .35rem; }
 /* 검색어 = 복사 버튼(토글이 아니라 동작 → 12px 모서리 유지) */
 button.kw.kw-copy { font: inherit; font-size: 15px; font-weight: 500; cursor: copy; display: inline-flex; align-items: center; gap: .3rem; padding: .05rem .55rem; }
 button.kw.kw-copy span { font-size: 13px; color: var(--ink-muted); }
+
+/* 2단계 후보 고르는 중(스켈레톤) */
+.skel .skel-msg { font-weight: 700; color: var(--ink); margin: 0 0 1rem; }
+.skel-line { height: 1.1rem; border-radius: 6px; background: var(--surface-tint); margin: 0 0 .5rem; animation: skel 1.2s ease-in-out infinite; }
+.skel-line.short { width: 60%; margin-bottom: 1.2rem; }
+@keyframes skel { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .skel-line { animation: none; } }
