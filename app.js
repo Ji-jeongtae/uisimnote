@@ -18,8 +18,9 @@ const MEDIA = { academic: '학술 DB', statistics: '공공 통계', official: '�
 const VERDICT = { ok: '확인함', problem: '문제 있음', unused: '안 씀' };
 // 2단계 이유 칩 (학생 예측). 앞 4개는 AI 분류 유형과 대응한다.
 // '숫자'와 '날짜·제도'는 하나의 칩으로 합쳤다(2026-11-19). AI 유형 '통계·수치'·'날짜·법령' 둘 다에 대응한다.
-const REASONS = { num: '숫자·날짜·제도', cite: '논문·책', who: '인물·기관 발언', unsure: '잘 모르겠음' };
-const REASON_TYPE = { num: ['통계·수치', '날짜·법령'], cite: ['논문·책 인용'], who: ['인물·기관 발언'] };
+// 편향(한쪽으로 치우친 말)·비약(근거에서 결론으로 건너뜀) 추가(2026-11-19). AI 유형에 '편향'은 없어 가장 가까운 '일반화'와 맞춘다.
+const REASONS = { num: '숫자·날짜·제도', cite: '논문·책', who: '인물·기관 발언', bias: '편향', leap: '비약', unsure: '잘 모르겠음' };
+const REASON_TYPE = { num: ['통계·수치', '날짜·법령'], cite: ['논문·책 인용'], who: ['인물·기관 발언'], bias: ['일반화'], leap: ['인과관계', '일반화'] };
 // 'AI 조교의 한마디' — 유형별 고정 문구. Gemini의 reason은 화면에 쓰지 않는다(Gemini는 검색어만 제공).
 const TIP_OPINION = '이 문장은 사실 확인보다 내 보고서의 입장과 맞는지 판단하면 돼요.';
 const TIP = {
