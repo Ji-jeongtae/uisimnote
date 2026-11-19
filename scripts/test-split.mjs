@@ -45,7 +45,10 @@ console.log('ok — split/normalize/validate 테스트 통과');
 import { buildReport, josa, linkOf } from '../lib/report.js';
 assert.equal(josa('학술지', '을/를'), '를');
 assert.equal(josa('원문', '을/를'), '을');
-assert.equal(josa('Scientific Reports', '을/를'), '을(를)');
+assert.equal(josa('Scientific Reports', '을/를'), '를'); // s=에스, 받침 없음
+assert.equal(josa('CJ E&M(2018년 합병 후 CJ ENM)', '으로/로'), '으로'); // 괄호 앞 E&M=엠
+assert.equal(josa('2023', '으로/로'), '으로'); // 삼
+assert.equal(josa('~', '을/를'), '을(를)'); // 읽을 수 없으면 둘 다
 assert.equal(josa('학술지명', '으로/로'), '으로');
 assert.equal(josa('서울', '으로/로'), '로');
 assert.equal(josa('가이드', '으로/로'), '로');
@@ -60,7 +63,7 @@ assert.equal(r1[0].body, 'ChatGPT (무료) GPT-6(2026.11.19 사용)');
 const v1 = r1[3].body;
 assert.ok(v1.includes('확인이 필요한 주장 4개 중 확인함 1 · 문제 발견 1 · 사용 안 함 1 · 미확인 1, AI 표시 전 먼저 의심한 비율 50%'));
 assert.ok(v1.includes('① AI 답변 중 "2023년 Nature에 실린 Walters와 Wild…"에서 Nature 부분이 실제와 다르게 답변됨'), v1);
-assert.ok(v1.includes('① [원문 3번째 문장] Walters & Wilder(2023) 원문을 직접 찾아 교차 검증한 후, Scientific Reports(으)로 정정함, 2장에 반영'), v1);
+assert.ok(v1.includes('① [원문 3번째 문장] Walters & Wilder(2023) 원문을 직접 찾아 교차 검증한 후, Scientific Reports로 정정함, 2장에 반영'), v1);
 assert.ok(v1.includes('   대조 자료 링크: (URL 또는 DOI 작성 필요)'), v1); // 링크가 없으면 빠지지 않고 '작성 필요'로 드러난다
 // 링크가 있으면: 자료 이름에서 링크를 떼고, 링크는 다음 줄에. DOI는 doi.org 주소로.
 const r3 = buildReport({ meta, answer: 'a', conclusion: 'c', compared: '', ratio: 0, items: [

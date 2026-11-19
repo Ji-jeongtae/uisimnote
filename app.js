@@ -880,11 +880,26 @@ function verifyInputs(id, a, vs) {
 }
 
 let active4 = null;
+// 시연용 예시(친구 답변)는 정답표 기준 샘플 판정을 처음 한 번 채운다(학생이 고칠 수 있음)
+function applySampleVerify(a) {
+  if (state.sampleApplied || Object.keys(state.verify || {}).length) return false;
+  const sample = cachedExample(state.answer)?.sampleVerify;
+  if (!sample) return false;
+  for (const id of a.targets) if (sample[id]) state.verify[id] = { ...sample[id] };
+  const concl = cachedExample(state.answer)?.sampleConclusion;
+  if (concl && !state.conclusion.trim()) state.conclusion = concl; // 증빙서 4번 [최종 결론] 샘플
+  state.sampleApplied = true;
+  save();
+  return true;
+}
+
 function viewStep4() {
   const a = analysis();
+  applySampleVerify(a);
   const vs = verifyStats(a);
   const head = `<h2>4. 문제 찾고 고치기</h2>
-  <p class="lead">왼쪽에서 문장을 고르고, 오른쪽에서 <b>'확인함'</b>, <b>'문제 있음'</b>, <b>'안 씀'</b> 중 하나를 누르세요. 문제만 자세히 적으면 됩니다.</p>`;
+  <p class="lead">왼쪽에서 문장을 고르고, 오른쪽에서 <b>'확인함'</b>, <b>'문제 있음'</b>, <b>'안 씀'</b> 중 하나를 누르세요. 문제만 자세히 적으면 됩니다.</p>
+  ${state.sampleApplied && cachedExample(state.answer)?.sampleVerify ? '<p class="sample-note">시연용 예시: 정답표 기준으로 판정과 근거를 미리 채웠어요. 고쳐도 돼요.</p>' : ''}`;
   if (!a.targets.length) {
     return `${head}<div class="panel tint">확인할 주장이 없습니다. 다음 단계로 넘어가세요.</div>
     <div class="actions"><button data-action="go" data-step="3">← 이전</button><span class="spacer"></span><button class="primary" data-action="to-5">증빙서 미리보기 →</button></div>`;
@@ -1643,7 +1658,7 @@ function prepareSession() {
     state.sourceAnswer = text;
     state.selected = []; state.ai = null; state.verify = {}; state.doubtLog = null;
     state.summary = ''; state.memo = ''; state.conclusion = ''; state.compared = '';
-    state.reasons = {}; state.reasonNotes = {}; state.marks = {}; state.autoReasons = {};
+    state.reasons = {}; state.reasonNotes = {}; state.marks = {}; state.autoReasons = {}; state.sampleApplied = false;
     state.nextQ = null; state.keepMine = {};
     state.sessionId = `s${Date.now().toString(36)}`;
     state.maxStep = 2;
