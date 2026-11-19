@@ -1095,9 +1095,22 @@ function viewStep5() {
   <div class="side-nav no-print">
     <button class="small-btn" data-action="go" data-step="4">← 이전</button>
     <span class="spacer"></span>
-    <button class="primary small-btn" data-action="copy-all">증빙서 전체 복사</button>
+    <button class="primary small-btn" data-action="to-6">저장하고 증빙서로 →</button>
   </div>
-  <div class="panel side-metrics" title="AI 표시 전에 고른 문장 ${picked}개 · 회차 기록은 이 브라우저에만 저장됩니다">
+  ${metricsPanel(a, hist, picked)}
+  ${nextQuestionCard(a)}
+  <div class="side-extra no-print">
+    <button class="small-btn" data-action="print">인쇄 / PDF</button>
+    <button class="small-btn" data-action="export">JSON 내보내기</button>
+    <button class="small-btn" data-action="new">새로 시작</button>
+  </div>`;
+  return splitView(head, main, side);
+}
+
+// 먼저 의심·이유도 같음 + 회차 막대 + 놓친 유형 (5·6단계 공용)
+function metricsPanel(a, hist, picked) {
+  const histRows = hist.filter((h) => h.flagged > 0).slice(-8);
+  return `<div class="panel side-metrics" title="AI 표시 전에 고른 문장 ${picked}개 · 회차 기록은 이 브라우저에만 저장됩니다">
     <div class="m-grid">
     <div class="metrics2">
       <div class="stat hero"><div class="v"><span id="ratio5">${a.ratio}</span><small>%</small></div><div class="k">먼저 의심 (${a.first.length}/${a.flagged.length})</div></div>
@@ -1116,14 +1129,44 @@ function viewStep5() {
     </div>
     </div>
     ${missedNote(hist.find((h) => h.id === state.sessionId))}
-  </div>
-  ${nextQuestionCard(a)}
-  <div class="side-extra no-print">
-    <button class="small-btn" data-action="print">인쇄 / PDF</button>
-    <button class="small-btn" data-action="export">JSON 내보내기</button>
-    <button class="small-btn" data-action="new">새로 시작</button>
   </div>`;
-  return splitView(head, main, side);
+}
+
+// 6단계 '증빙서 저장': 한글(HWP) 양식에 붙여 넣을 내용만 + 바로 복사, 그 아래 지표·다음 질문
+// 화면에는 줄마다 앞부분만(… 축약), 복사는 전체.
+function clipBody(body) {
+  const lines = String(body || '').split(/\r?\n/);
+  const out = lines.slice(0, 6).map((l) => (l.length > 60 ? `${l.slice(0, 60)}…` : l));
+  if (lines.length > 6) out.push(`… (${lines.length - 6}줄 더 — 복사하면 전체가 들어가요)`);
+  return out.join(String.fromCharCode(10));
+}
+function viewStep6() {
+  const a = analysis();
+  const vs = verifyStats(a);
+  const hist = recordHistory(a, vs) || store.get(HISTORY_KEY, []);
+  const picked = state.doubtLog?.ids.length ?? state.selected.length;
+  const secs = reportSections(a);
+  return `
+  <div class="step-head"><h2>6. 증빙서 저장</h2><p class="lead">한글 파일 양식의 각 칸에 [복사]해서 그대로 붙여 넣으세요. 화면에는 앞부분만 보이고, 복사하면 전체가 들어가요.</p></div>
+  <div class="save-wrap">
+    <div class="panel hwp">
+      <div class="report-head"><h3>한글 파일에 붙여 넣을 내용</h3><button class="primary" data-action="copy-all">전체 복사</button></div>
+      ${secs.map((s) => `
+      <section class="hwp-sec">
+        <div class="report-head"><h4>${esc(s.title)}</h4><button class="primary small-btn" data-action="copy-sec" data-key="${s.key}">복사</button></div>
+        <pre class="report-body clip">${linkify(esc(clipBody(s.body)))}</pre>
+      </section>`).join('')}
+    </div>
+    ${metricsPanel(a, hist, picked)}
+    ${nextQuestionCard(a)}
+    <div class="actions no-print">
+      <button data-action="go" data-step="5">← 증빙서 고치기</button>
+      <span class="spacer"></span>
+      <button class="small-btn" data-action="print">인쇄 / PDF</button>
+      <button class="small-btn" data-action="export">JSON 내보내기</button>
+      <button class="small-btn" data-action="new">새로 시작</button>
+    </div>
+  </div>`;
 }
 
 // 이번 회차에 놓친 유형 + '문제 있음' 유형 → 제안할 조건 키
@@ -1225,7 +1268,7 @@ function countUp(el, to, ms = 500) {
 
 /* ---------- 렌더 ---------- */
 function render(focus = true) {
-  const views = { 1: viewStep1, 2: viewStep2, 3: viewStep3, 4: viewStep4, 5: viewStep5 };
+  const views = { 1: viewStep1, 2: viewStep2, 3: viewStep3, 4: viewStep4, 5: viewStep5, 6: viewStep6 };
   clearReveal();
   $view.innerHTML = views[state.step]();
   document.querySelectorAll('#stepper li').forEach((li) => {
@@ -1237,7 +1280,7 @@ function render(focus = true) {
   });
   document.getElementById('demo-badge').hidden = !DEMO;
   if (state.step === 3 && state.ai && pendingReveal) { pendingReveal = false; runReveal(); }
-  if (state.step === 5) { const a = analysis(); countUp(document.getElementById('ratio5'), a.ratio); countUp(document.getElementById('reason5'), a.reasonRatio); }
+  if (state.step === 5 || state.step === 6) { const a = analysis(); countUp(document.getElementById('ratio5'), a.ratio); countUp(document.getElementById('reason5'), a.reasonRatio); }
   if (focus) { $view.focus({ preventScroll: true }); window.scrollTo(0, 0); }
 }
 
@@ -1304,6 +1347,7 @@ const actions = {
     } catch { toast('예시를 불러오지 못했습니다.'); }
   },
   'confirm-paste'() { confirmPaste(); },
+  'to-6'() { save(); advance(6); toast('저장했어요. 한글 파일 칸마다 [복사]해서 붙여 넣으세요.'); },
   'to-2'() {
     if (state.answer.trim() && state.answer.trim() !== state.confirmedFor) confirmPaste(true);
     const text = state.answer.trim();

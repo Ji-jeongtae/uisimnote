@@ -65,7 +65,7 @@ a { color: var(--brand); }
 .demo-badge { margin-left: auto; border: var(--bw) solid var(--line-soft); color: var(--ink-muted); border-radius: 999px; padding: .1rem .75rem; font-size: 15px; font-weight: 700; }
 
 /* stepper */
-.stepper { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: .4rem; padding: 0; margin: 1.1rem auto 1.4rem; }
+.stepper { list-style: none; display: grid; grid-template-columns: repeat(6, 1fr); gap: .4rem; padding: 0; margin: 1.1rem auto 1.4rem; }
 .stepper li { display: flex; align-items: center; gap: .45rem; padding: .5rem .6rem; border-radius: var(--r-ctl); color: var(--ink-muted); background: var(--surface-tint); font-size: 15px; min-width: 0; }
 .stepper .num { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: var(--bw) solid currentColor; font-weight: 700; font-size: 15px; }
 .stepper .lbl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -689,3 +689,9 @@ button.kw.kw-copy span { font-size: 13px; color: var(--ink-muted); }
 .remember li div { font-family: var(--serif); color: var(--ink); line-height: 1.6; }
 .remember del { color: var(--ink-muted); }
 .sample-note { font-size: 15px; color: var(--brand); font-weight: 700; margin: .3rem 0 0; }
+
+/* 6단계 증빙서 저장 */
+.save-wrap { max-width: 900px; }
+.hwp-sec { border-top: var(--bw) solid var(--line-soft); padding-top: .9rem; margin-top: 1rem; }
+.hwp .report-body.clip { white-space: pre-wrap; }
+.save-wrap .side-metrics, .save-wrap .next-q { margin-top: 1rem; }
