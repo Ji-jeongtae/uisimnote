@@ -681,3 +681,10 @@ button.kw.kw-copy span { font-size: 13px; color: var(--ink-muted); }
 .skel-line.short { width: 60%; margin-bottom: 1.2rem; }
 @keyframes skel { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .skel-line { animation: none; } }
+/* 5단계 기억할 것(반영 목록) */
+.remember { background: var(--surface-tint); border-radius: var(--r-ctl); padding: .8rem 1rem; max-height: 22rem; overflow: auto; }
+.remember h4 { font-size: 16px; margin: .2rem 0 .4rem; }
+.remember h4:not(:first-child) { margin-top: 1rem; }
+.remember ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.remember li div { font-family: var(--serif); color: var(--ink); line-height: 1.6; }
+.remember del { color: var(--ink-muted); }

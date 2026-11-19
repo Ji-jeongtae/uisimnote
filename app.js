@@ -1065,13 +1065,13 @@ function viewStep5() {
 
   <div class="panel no-print">
     <h3>기억할 것 메모</h3>
-    <p class="small muted">AI 답변을 다시 보면서 보고서에 쓸 때 기억할 것을 적어 두세요. 메모는 증빙서에 들어가지 않습니다.</p>
+    <p class="small muted">보고서에 반영해야 할 것만 검증 결과에서 모았어요. 더 기억할 것은 오른쪽에 적어 두세요. 메모는 증빙서에 들어가지 않습니다.</p>
     <div class="grid-2">
-      <div class="answer source-box" aria-label="AI 답변 원문">${esc(state.answer)}</div>
+      <div class="remember" aria-label="보고서에 반영할 것">${rememberList(a)}</div>
       <label class="field" style="margin:0"><span>메모</span>
         <textarea data-bind="memo" maxlength="1000" rows="8" placeholder="예: 55%·18%는 모델별 수치라 함께 써야 함 / 2장에는 원문 표 인용">${esc(state.memo || '')}</textarea></label>
     </div>
-    <label class="field" style="margin:1rem 0 0"><span>최종 결론 <em>검증 결과를 반영해 내 말로 쓰세요 · 증빙서 4번에 들어가요</em></span>
+    <label class="field" style="margin:1rem 0 0"><span>최종 결론 <em>검증 결과를 반영해 내 말로 쓰세요 · 증빙서 4번 '단계별 비판적 검증 요약'의 [최종 결론]에 들어가요</em></span>
       <textarea data-bind="conclusion" rows="3">${esc(state.conclusion)}</textarea></label>
   </div>
 
@@ -1159,6 +1159,29 @@ function nextQuestionCard(a) {
     </div>
     <p class="next-foot">좋은 질문은 검증을 없애 주지 않아요. 검증하기 쉬운 답을 받게 해 줄 뿐이에요.</p>
   </div>`;
+}
+
+// 5단계 '기억할 것': 검증 결과에서 보고서에 반영할 것만 (고친 것 / 쓰지 않기로 한 것 / 아직 확인 안 한 것)
+function rememberList(a) {
+  const text = (id) => state.sentences.find((s) => s.id === id)?.text || '';
+  const short = (t) => (t.length > 46 ? `${t.slice(0, 46)}…` : t);
+  const fixed = [], unused = [], unseen = [];
+  for (const id of a.targets) {
+    const v = state.verify[id] || {};
+    if (v.verdict === 'problem') fixed.push({ id, v });
+    else if (v.verdict === 'unused') unused.push(id);
+    else if (v.verdict !== 'ok') unseen.push(id);
+  }
+  const sec = (title, items) => (items.length ? `<h4>${title} <span class="muted small">${items.length}</span></h4><ul>${items.join('')}</ul>` : '');
+  const html = [
+    sec('고쳐서 반영할 것', fixed.map(({ id, v }) => {
+      const link = linkOf(v.cross);
+      return `<li><span class="muted small">원문 ${id}번째 문장</span><div><del>${esc(v.problem || '(문제 발견 미작성)')}</del> → <b>${esc(v.fix || '(정정 미작성)')}</b>${v.location ? ` <span class="muted small">· ${esc(v.location)}</span>` : ''}</div>${link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer" class="small">대조 자료 ↗</a>` : '<span class="small muted">대조 자료 링크 없음</span>'}</li>`;
+    })),
+    sec('쓰지 않기로 한 문장', unused.map((id) => `<li><span class="muted small">원문 ${id}번째 문장</span><div>${esc(short(text(id)))}</div></li>`)),
+    sec('아직 확인하지 않은 문장', unseen.map((id) => `<li><span class="muted small">원문 ${id}번째 문장</span><div>${esc(short(text(id)))}</div></li>`)),
+  ].join('');
+  return html || '<p class="muted small" style="margin:0">고친 문장이나 남은 문장이 없어요. 확인한 내용 그대로 써도 돼요.</p>';
 }
 
 function keepNote(a) {
