@@ -881,25 +881,26 @@ function verifyInputs(id, a, vs) {
 
 let active4 = null;
 // 시연용 예시(친구 답변)는 정답표 기준 샘플 판정을 처음 한 번 채운다(학생이 고칠 수 있음)
+// [샘플 데이터 채우기] 버튼을 눌렀을 때만(시연용 예시). 이미 적은 판정도 샘플로 덮어쓴다.
 function applySampleVerify(a) {
-  if (state.sampleApplied || Object.keys(state.verify || {}).length) return false;
   const sample = cachedExample(state.answer)?.sampleVerify;
   if (!sample) return false;
   for (const id of a.targets) if (sample[id]) state.verify[id] = { ...sample[id] };
   const concl = cachedExample(state.answer)?.sampleConclusion;
   if (concl && !state.conclusion.trim()) state.conclusion = concl; // 증빙서 4번 [최종 결론] 샘플
   state.sampleApplied = true;
+  // '문제 있음' 문장을 열어 채워진 칸을 바로 보여 준다
+  active4 = a.targets.find((id) => sample[id]?.verdict === 'problem') ?? active4;
   save();
   return true;
 }
 
 function viewStep4() {
   const a = analysis();
-  applySampleVerify(a);
   const vs = verifyStats(a);
   const head = `<h2>4. 문제 찾고 고치기</h2>
   <p class="lead">왼쪽에서 문장을 고르고, 오른쪽에서 <b>'확인함'</b>, <b>'문제 있음'</b>, <b>'안 씀'</b> 중 하나를 누르세요. 문제만 자세히 적으면 됩니다.</p>
-  ${state.sampleApplied && cachedExample(state.answer)?.sampleVerify ? '<p class="sample-note">시연용 예시: 정답표 기준으로 판정과 근거를 미리 채웠어요. 고쳐도 돼요.</p>' : ''}`;
+  ${state.sampleApplied && cachedExample(state.answer)?.sampleVerify ? '<p class="sample-note">샘플 데이터(정답표 기준)를 채웠어요. 고쳐도 돼요.</p>' : ''}`;
   if (!a.targets.length) {
     return `${head}<div class="panel tint">확인할 주장이 없습니다. 다음 단계로 넘어가세요.</div>
     <div class="actions"><button data-action="go" data-step="3">← 이전</button><span class="spacer"></span><button class="primary" data-action="to-5">증빙서 미리보기 →</button></div>`;
@@ -934,6 +935,7 @@ function viewStep4() {
     </div>
     <button class="primary small-btn" data-action="to-5">증빙서 미리보기 →</button>
   </div>
+  ${cachedExample(state.answer)?.sampleVerify ? '<div class="sample-bar"><button type="button" class="small-btn" data-action="fill-sample">샘플 데이터 채우기</button><span class="muted small">정답표 기준 판정·문제 있음 칸을 채워요</span></div>' : ''}
   <div class="panel side-detail" id="verify-side">${verifyInputs(active4, a, vs)}</div>
   ${vs.problem === 0 ? `
   <div class="panel">
@@ -1347,6 +1349,13 @@ const actions = {
     } catch { toast('예시를 불러오지 못했습니다.'); }
   },
   'confirm-paste'() { confirmPaste(); },
+  'fill-sample'() {
+    if (!applySampleVerify(analysis())) return;
+    const y = window.scrollY;
+    render(false);
+    window.scrollTo(0, y);
+    toast('샘플 데이터를 채웠어요. 문제 있음 문장의 칸을 확인해 보세요.');
+  },
   'to-6'() { save(); advance(6); toast('저장했어요. 한글 파일 칸마다 [복사]해서 붙여 넣으세요.'); },
   'to-2'() {
     if (state.answer.trim() && state.answer.trim() !== state.confirmedFor) confirmPaste(true);

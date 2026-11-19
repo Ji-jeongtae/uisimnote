@@ -695,3 +695,4 @@ button.kw.kw-copy span { font-size: 13px; color: var(--ink-muted); }
 .hwp-sec { border-top: var(--bw) solid var(--line-soft); padding-top: .9rem; margin-top: 1rem; }
 .hwp .report-body.clip { white-space: pre-wrap; }
 .save-wrap .side-metrics, .save-wrap .next-q { margin-top: 1rem; }
+.sample-bar { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin: 0 0 .8rem; }
