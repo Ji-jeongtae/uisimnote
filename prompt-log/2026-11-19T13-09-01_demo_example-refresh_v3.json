@@ -1,0 +1,142 @@
+{
+  "at": "2026-11-19T13:09:09.759Z",
+  "model": "gemini-2.5-flash",
+  "promptVersion": "v3 (2026-11-19)",
+  "purpose": "예시 분류 교체",
+  "input": {
+    "question": "생성형 AI가 만든 학술 인용은 얼마나 정확한지 레포트용으로 정리해 줘",
+    "sentences": [
+      {
+        "id": 3,
+        "text": "2023년 Nature에 실린 Walters와 Wilder의 연구는 ChatGPT가 만든 학술 인용 636건을 검증했습니다."
+      },
+      {
+        "id": 4,
+        "text": "이 연구에서 GPT-3.5가 만든 인용의 55%, GPT-4가 만든 인용의 18%는 실제로 존재하지 않는 문헌이었습니다."
+      },
+      {
+        "id": 6,
+        "text": "이런 오류가 생기는 이유는 AI가 사실을 검색하는 것이 아니라 다음에 올 단어를 확률적으로 예측하기 때문입니다."
+      },
+      {
+        "id": 7,
+        "text": "대부분의 대학생은 AI가 제시한 출처를 직접 확인하지 않고 그대로 사용합니다."
+      },
+      {
+        "id": 8,
+        "text": "명지대학교는 2026년 8월 생성형 AI 활용 가이드라인을 제정해 학생에게 AI 답변의 검증 과정을 기록하도록 요구하고 있습니다."
+      }
+    ]
+  },
+  "raw": "{\"items\":[{\"id\":3,\"types\":[\"논문·책 인용\"],\"level\":\"must\",\"reason\":\"연구가 실제로 해당 내용을 검증했는지 원문에서 확인해야 합니다.\",\"media\":[\"academic\"],\"keywords\":[\"Walters Wilder 2023 ChatGPT citation accuracy\",\"ChatGPT 학술 인용 검증 연구\"],\"sites\":[\"scholar\",\"riss\"],\"official\":[]},{\"id\":4,\"types\":[\"논문·책 인용\",\"통계·수치\"],\"level\":\"must\",\"reason\":\"연구 원문에서 GPT 버전별 인용 오류 비율을 직접 확인해야 합니다.\",\"media\":[\"academic\",\"statistics\"],\"keywords\":[\"GPT 학술 인용 오류율\",\"AI citation hallucination rates\"],\"sites\":[\"scholar\",\"riss\"],\"official\":[]},{\"id\":6,\"types\":[\"인과관계\",\"개념 정의\"],\"level\":\"should\",\"reason\":\"AI의 작동 방식과 인용 오류 발생의 인과관계를 확인해야 합니다.\",\"media\":[],\"keywords\":[\"생성형 AI 작동 원리\",\"AI 인용 오류 원인\"],\"sites\":[\"scholar\",\"bigkinds\"],\"official\":[]},{\"id\":7,\"types\":[\"일반화\",\"의견·요약\"],\"level\":\"should\",\"reason\":\"'대부분'이라는 일반화된 주장이 어떤 근거로 제시되었는지 확인해야 합니다.\",\"media\":[],\"keywords\":[\"대학생 AI 출처 미확인\",\"AI 답변 검증 학생\"],\"sites\":[\"scholar\",\"riss\"],\"official\":[]},{\"id\":8,\"types\":[\"인물·기관 발언\",\"날짜·법령\"],\"level\":\"must\",\"reason\":\"명지대학교의 AI 활용 가이드라인 제정 여부와 내용, 시행일을 확인해야 합니다.\",\"media\":[\"official\"],\"keywords\":[\"명지대학교 AI 활용 가이드라인\",\"대학 AI 검증 기록 요구\"],\"sites\":[\"korea\",\"bigkinds\"],\"official\":[{\"name\":\"명지대학교\",\"domain\":\"mju.ac.kr\"}]}]}",
+  "items": [
+    {
+      "id": 3,
+      "level": "must",
+      "types": [
+        "논문·책 인용"
+      ],
+      "reason": "연구가 실제로 해당 내용을 검증했는지 원문에서 확인해야 합니다.",
+      "media": [
+        "academic"
+      ],
+      "keywords": [
+        "Walters Wilder 2023 ChatGPT citation accuracy",
+        "ChatGPT 학술 인용 검증 연구"
+      ],
+      "sites": [
+        "scholar",
+        "riss"
+      ],
+      "official": []
+    },
+    {
+      "id": 4,
+      "level": "must",
+      "types": [
+        "논문·책 인용",
+        "통계·수치"
+      ],
+      "reason": "연구 원문에서 GPT 버전별 인용 오류 비율을 직접 확인해야 합니다.",
+      "media": [
+        "academic",
+        "statistics"
+      ],
+      "keywords": [
+        "GPT 학술 인용 오류율",
+        "AI citation hallucination rates"
+      ],
+      "sites": [
+        "scholar",
+        "riss"
+      ],
+      "official": []
+    },
+    {
+      "id": 6,
+      "level": "should",
+      "types": [
+        "인과관계",
+        "개념 정의"
+      ],
+      "reason": "AI의 작동 방식과 인용 오류 발생의 인과관계를 확인해야 합니다.",
+      "media": [],
+      "keywords": [
+        "생성형 AI 작동 원리",
+        "AI 인용 오류 원인"
+      ],
+      "sites": [
+        "scholar",
+        "bigkinds"
+      ],
+      "official": []
+    },
+    {
+      "id": 7,
+      "level": "should",
+      "types": [
+        "일반화",
+        "의견·요약"
+      ],
+      "reason": "'대부분'이라는 일반화된 주장이 어떤 근거로 제시되었는지 확인해야 합니다.",
+      "media": [],
+      "keywords": [
+        "대학생 AI 출처 미확인",
+        "AI 답변 검증 학생"
+      ],
+      "sites": [
+        "scholar",
+        "riss"
+      ],
+      "official": []
+    },
+    {
+      "id": 8,
+      "level": "must",
+      "types": [
+        "인물·기관 발언",
+        "날짜·법령"
+      ],
+      "reason": "명지대학교의 AI 활용 가이드라인 제정 여부와 내용, 시행일을 확인해야 합니다.",
+      "media": [
+        "official"
+      ],
+      "keywords": [
+        "명지대학교 AI 활용 가이드라인",
+        "대학 AI 검증 기록 요구"
+      ],
+      "sites": [
+        "korea",
+        "bigkinds"
+      ],
+      "official": [
+        {
+          "name": "명지대학교",
+          "domain": "mju.ac.kr"
+        }
+      ]
+    }
+  ],
+  "missing": 0,
+  "ms": 8738
+}

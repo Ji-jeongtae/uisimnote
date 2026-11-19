@@ -1,0 +1,82 @@
+[
+  {
+    "input": "participant-a",
+    "keyName": "정답표",
+    "version": "v3",
+    "okRuns": 3,
+    "sentences": 10,
+    "keyMatch": {
+      "type": 80,
+      "level": 70,
+      "both": 70,
+      "judged": 30
+    },
+    "consistency": {
+      "same": 8,
+      "total": 10,
+      "pct": 80
+    },
+    "judgmentFlags": [],
+    "log": "prompt-log\\2026-11-19T12-08-45_participant-a_v3.json"
+  },
+  {
+    "input": "participant-a",
+    "keyName": "정답표",
+    "version": "v4",
+    "okRuns": 3,
+    "sentences": 10,
+    "keyMatch": {
+      "type": 80,
+      "level": 70,
+      "both": 70,
+      "judged": 30
+    },
+    "consistency": {
+      "same": 6,
+      "total": 10,
+      "pct": 60
+    },
+    "judgmentFlags": [],
+    "log": "prompt-log\\2026-11-19T12-08-45_participant-a_v4.json"
+  },
+  {
+    "input": "demo",
+    "keyName": "수기 예시(정답표 아님)",
+    "version": "v3",
+    "okRuns": 3,
+    "sentences": 10,
+    "keyMatch": {
+      "type": 93,
+      "level": 93,
+      "both": 93,
+      "judged": 30
+    },
+    "consistency": {
+      "same": 7,
+      "total": 10,
+      "pct": 70
+    },
+    "judgmentFlags": [],
+    "log": "prompt-log\\2026-11-19T12-08-45_demo_v3.json"
+  },
+  {
+    "input": "demo",
+    "keyName": "수기 예시(정답표 아님)",
+    "version": "v4",
+    "okRuns": 3,
+    "sentences": 10,
+    "keyMatch": {
+      "type": 97,
+      "level": 97,
+      "both": 97,
+      "judged": 30
+    },
+    "consistency": {
+      "same": 8,
+      "total": 10,
+      "pct": 80
+    },
+    "judgmentFlags": [],
+    "log": "prompt-log\\2026-11-19T12-08-45_demo_v4.json"
+  }
+]

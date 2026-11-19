@@ -1,0 +1,721 @@
+{
+  "at": "2026-11-19T12:12:10.955Z",
+  "model": "gemini-2.5-flash",
+  "promptVersion": "v3",
+  "keyName": "수기 예시(정답표 아님)",
+  "input": {
+    "question": "생성형 AI가 만든 학술 인용은 얼마나 정확한지 레포트용으로 정리해 줘",
+    "sentences": [
+      {
+        "id": 1,
+        "text": "생성형 AI 답변의 인용 오류에 대해 정리해 드릴게요.",
+        "key": {
+          "no": 1,
+          "types": [
+            "의견·요약"
+          ],
+          "level": "info",
+          "manual": true
+        }
+      },
+      {
+        "id": 2,
+        "text": "환각(hallucination)이란 생성형 AI가 사실이 아닌 내용을 그럴듯하게 만들어 내는 현상을 말합니다.",
+        "key": {
+          "no": 2,
+          "types": [
+            "개념 정의"
+          ],
+          "level": "info",
+          "manual": true
+        }
+      },
+      {
+        "id": 3,
+        "text": "2023년 Nature에 실린 Walters와 Wilder의 연구는 ChatGPT가 만든 학술 인용 636건을 검증했습니다.",
+        "key": {
+          "no": 3,
+          "types": [
+            "논문·책 인용",
+            "통계·수치"
+          ],
+          "level": "must",
+          "manual": true
+        }
+      },
+      {
+        "id": 4,
+        "text": "이 연구에서 GPT-3.5가 만든 인용의 55%, GPT-4가 만든 인용의 18%는 실제로 존재하지 않는 문헌이었습니다.",
+        "key": {
+          "no": 4,
+          "types": [
+            "통계·수치",
+            "논문·책 인용"
+          ],
+          "level": "must",
+          "manual": true
+        }
+      },
+      {
+        "id": 5,
+        "text": "실존하는 인용도 권·호·쪽수 같은 서지 정보에 오류가 있는 경우가 많았습니다.",
+        "key": {
+          "no": 5,
+          "types": [
+            "일반화"
+          ],
+          "level": "should",
+          "manual": true
+        }
+      },
+      {
+        "id": 6,
+        "text": "이런 오류가 생기는 이유는 AI가 사실을 검색하는 것이 아니라 다음에 올 단어를 확률적으로 예측하기 때문입니다.",
+        "key": {
+          "no": 6,
+          "types": [
+            "인과관계"
+          ],
+          "level": "should",
+          "manual": true
+        }
+      },
+      {
+        "id": 7,
+        "text": "대부분의 대학생은 AI가 제시한 출처를 직접 확인하지 않고 그대로 사용합니다.",
+        "key": {
+          "no": 7,
+          "types": [
+            "일반화"
+          ],
+          "level": "should",
+          "manual": true
+        }
+      },
+      {
+        "id": 8,
+        "text": "명지대학교는 2026년 8월 생성형 AI 활용 가이드라인을 제정해 학생에게 AI 답변의 검증 과정을 기록하도록 요구하고 있습니다.",
+        "key": {
+          "no": 8,
+          "types": [
+            "날짜·법령",
+            "인물·기관 발언"
+          ],
+          "level": "must",
+          "manual": true
+        }
+      },
+      {
+        "id": 9,
+        "text": "따라서 AI가 제시한 인용은 학술 데이터베이스에서 제목과 저자를 직접 검색해 확인하는 것이 좋습니다.",
+        "key": {
+          "no": 9,
+          "types": [
+            "의견·요약"
+          ],
+          "level": "info",
+          "manual": true
+        }
+      },
+      {
+        "id": 10,
+        "text": "요약하면, AI의 인용은 형식이 정상이어도 실제 존재 여부를 반드시 확인해야 합니다.",
+        "key": {
+          "no": 10,
+          "types": [
+            "의견·요약"
+          ],
+          "level": "info",
+          "manual": true
+        }
+      }
+    ]
+  },
+  "runs": [
+    {
+      "run": 1,
+      "ms": 13916,
+      "missing": 0,
+      "items": [
+        {
+          "id": 1,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "AI 답변의 인용 오류에 대한 전반적인 안내 문장입니다.",
+          "media": [],
+          "keywords": [],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 2,
+          "level": "info",
+          "types": [
+            "개념 정의"
+          ],
+          "reason": "'환각'이라는 용어의 개념 정의를 설명하는 문장입니다.",
+          "media": [],
+          "keywords": [
+            "환각 hallucination 생성형 AI",
+            "AI 환각 정의"
+          ],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 3,
+          "level": "must",
+          "types": [
+            "논문·책 인용",
+            "통계·수치"
+          ],
+          "reason": "언급된 연구의 내용과 검증 대상을 원문에서 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "Walters Wilder 2023 ChatGPT citation",
+            "Walters Wilder 연구"
+          ],
+          "sites": [
+            "scholar",
+            "riss"
+          ],
+          "official": []
+        },
+        {
+          "id": 4,
+          "level": "must",
+          "types": [
+            "논문·책 인용",
+            "통계·수치"
+          ],
+          "reason": "연구 원문에서 GPT 버전별 인용 오류 비율을 직접 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "Walters Wilder GPT 인용 오류",
+            "GPT hallucination citation percentage"
+          ],
+          "sites": [
+            "scholar",
+            "riss"
+          ],
+          "official": []
+        },
+        {
+          "id": 5,
+          "level": "must",
+          "types": [
+            "논문·책 인용"
+          ],
+          "reason": "연구 원문에서 서지 정보 오류에 대한 내용을 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "Walters Wilder 서지 정보 오류",
+            "학술 인용 서지 오류"
+          ],
+          "sites": [
+            "scholar",
+            "riss"
+          ],
+          "official": []
+        },
+        {
+          "id": 6,
+          "level": "should",
+          "types": [
+            "인과관계",
+            "일반 상식"
+          ],
+          "reason": "AI의 작동 방식과 인용 오류 발생 원인 간의 인과관계를 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "AI 인용 오류 원인",
+            "생성형 AI 작동 원리"
+          ],
+          "sites": [
+            "scholar"
+          ],
+          "official": []
+        },
+        {
+          "id": 7,
+          "level": "should",
+          "types": [
+            "일반화"
+          ],
+          "reason": "'대부분'이라는 일반화된 주장이 실제 통계나 연구로 뒷받침되는지 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "대학생 AI 출처 확인",
+            "AI 인용 검증 실태"
+          ],
+          "sites": [
+            "riss",
+            "scholar",
+            "kosis"
+          ],
+          "official": []
+        },
+        {
+          "id": 8,
+          "level": "must",
+          "types": [
+            "인물·기관 발언",
+            "날짜·법령"
+          ],
+          "reason": "명지대학교의 AI 활용 가이드라인 제정 여부와 내용을 원문에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "명지대학교 AI 활용 가이드라인",
+            "명지대 생성형 AI 정책"
+          ],
+          "sites": [
+            "nl",
+            "korea"
+          ],
+          "official": [
+            {
+              "name": "명지대학교",
+              "domain": "mju.ac.kr"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "AI 인용 검증 방법에 대한 제안이므로 참고할 수 있습니다.",
+          "media": [],
+          "keywords": [
+            "AI 인용 검증 방법",
+            "학술 데이터베이스 인용 확인"
+          ],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 10,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "AI 인용 검증의 중요성을 요약한 내용입니다.",
+          "media": [],
+          "keywords": [],
+          "sites": [],
+          "official": []
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "ms": 12752,
+      "missing": 0,
+      "items": [
+        {
+          "id": 1,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "AI 답변의 인용 오류에 대한 전반적인 안내 문장입니다.",
+          "media": [],
+          "keywords": [],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 2,
+          "level": "info",
+          "types": [
+            "개념 정의"
+          ],
+          "reason": "'환각'이라는 용어의 개념 정의를 설명하는 문장입니다.",
+          "media": [],
+          "keywords": [
+            "환각 hallucination 생성형 AI",
+            "AI 환각 정의"
+          ],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 3,
+          "level": "must",
+          "types": [
+            "논문·책 인용",
+            "통계·수치"
+          ],
+          "reason": "언급된 연구의 내용과 검증 대상을 원문에서 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "Walters Wilder 2023 ChatGPT citation",
+            "Walters Wilder 연구"
+          ],
+          "sites": [
+            "scholar",
+            "riss"
+          ],
+          "official": []
+        },
+        {
+          "id": 4,
+          "level": "must",
+          "types": [
+            "논문·책 인용",
+            "통계·수치"
+          ],
+          "reason": "연구 원문에서 GPT 버전별 인용 오류 비율을 직접 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "Walters Wilder GPT 인용 오류",
+            "GPT hallucination citation percentage"
+          ],
+          "sites": [
+            "scholar",
+            "riss"
+          ],
+          "official": []
+        },
+        {
+          "id": 5,
+          "level": "must",
+          "types": [
+            "논문·책 인용"
+          ],
+          "reason": "연구 원문에서 서지 정보 오류에 대한 내용을 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "Walters Wilder 서지 정보 오류",
+            "학술 인용 서지 오류"
+          ],
+          "sites": [
+            "scholar",
+            "riss"
+          ],
+          "official": []
+        },
+        {
+          "id": 6,
+          "level": "should",
+          "types": [
+            "인과관계",
+            "일반 상식"
+          ],
+          "reason": "AI의 작동 방식과 인용 오류 발생 원인 간의 인과관계를 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "AI 인용 오류 원인",
+            "생성형 AI 작동 원리"
+          ],
+          "sites": [
+            "scholar"
+          ],
+          "official": []
+        },
+        {
+          "id": 7,
+          "level": "should",
+          "types": [
+            "일반화"
+          ],
+          "reason": "'대부분'이라는 일반화된 주장이 실제 통계나 연구로 뒷받침되는지 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "대학생 AI 출처 확인",
+            "AI 인용 검증 실태"
+          ],
+          "sites": [
+            "riss",
+            "scholar",
+            "kosis"
+          ],
+          "official": []
+        },
+        {
+          "id": 8,
+          "level": "must",
+          "types": [
+            "인물·기관 발언",
+            "날짜·법령"
+          ],
+          "reason": "명지대학교의 AI 활용 가이드라인 제정 여부와 내용을 원문에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "명지대학교 AI 활용 가이드라인",
+            "명지대 생성형 AI 정책"
+          ],
+          "sites": [
+            "nl",
+            "korea"
+          ],
+          "official": [
+            {
+              "name": "명지대학교",
+              "domain": "mju.ac.kr"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "AI 인용 검증 방법에 대한 제안이므로 참고할 수 있습니다.",
+          "media": [],
+          "keywords": [
+            "AI 인용 검증 방법",
+            "학술 데이터베이스 인용 확인"
+          ],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 10,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "AI 인용 검증의 중요성을 요약한 내용입니다.",
+          "media": [],
+          "keywords": [],
+          "sites": [],
+          "official": []
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "ms": 17300,
+      "missing": 0,
+      "items": [
+        {
+          "id": 1,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "학생에게 제공되는 정보의 목적을 설명하는 문장입니다.",
+          "media": [],
+          "keywords": [],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 2,
+          "level": "info",
+          "types": [
+            "개념 정의"
+          ],
+          "reason": "개념의 정의를 이해하는 데 도움이 되는 문장입니다.",
+          "media": [],
+          "keywords": [
+            "환각 hallucination 생성형 AI",
+            "AI 환각 정의"
+          ],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 3,
+          "level": "must",
+          "types": [
+            "논문·책 인용"
+          ],
+          "reason": "언급된 연구의 원문에서 검증 대상과 내용을 직접 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "Walters Wilder 2023 ChatGPT citation",
+            "ChatGPT 학술 인용 검증 연구"
+          ],
+          "sites": [
+            "scholar"
+          ],
+          "official": []
+        },
+        {
+          "id": 4,
+          "level": "must",
+          "types": [
+            "논문·책 인용",
+            "통계·수치"
+          ],
+          "reason": "연구 원문에서 GPT-3.5와 GPT-4의 인용 오류 비율을 직접 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "Walters Wilder GPT-3.5 GPT-4 인용 오류",
+            "AI 인용 환각 비율"
+          ],
+          "sites": [
+            "scholar"
+          ],
+          "official": []
+        },
+        {
+          "id": 5,
+          "level": "should",
+          "types": [
+            "일반화"
+          ],
+          "reason": "AI 인용의 서지 정보 오류 유형과 빈도를 연구 원문에서 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "AI 인용 서지 정보 오류",
+            "생성형 AI 인용 형식 오류"
+          ],
+          "sites": [
+            "scholar"
+          ],
+          "official": []
+        },
+        {
+          "id": 6,
+          "level": "should",
+          "types": [
+            "인과관계"
+          ],
+          "reason": "AI 인용 오류의 근본적인 원인에 대한 설명을 추가 자료에서 확인해야 합니다.",
+          "media": [
+            "academic"
+          ],
+          "keywords": [
+            "AI 인용 오류 발생 원리",
+            "생성형 AI 확률적 예측"
+          ],
+          "sites": [
+            "scholar"
+          ],
+          "official": []
+        },
+        {
+          "id": 7,
+          "level": "should",
+          "types": [
+            "일반화"
+          ],
+          "reason": "'대부분'이라는 일반화된 주장의 근거와 조사 범위를 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "대학생 AI 출처 미확인 실태",
+            "AI 답변 검증 습관"
+          ],
+          "sites": [
+            "riss",
+            "scholar"
+          ],
+          "official": []
+        },
+        {
+          "id": 8,
+          "level": "must",
+          "types": [
+            "인물·기관 발언",
+            "날짜·법령"
+          ],
+          "reason": "명지대학교의 AI 활용 가이드라인 제정 여부와 내용을 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "명지대학교 AI 가이드라인",
+            "대학 AI 검증 기록"
+          ],
+          "sites": [],
+          "official": [
+            {
+              "name": "명지대학교",
+              "domain": "mju.ac.kr"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "AI 인용 검증 방법에 대한 제안을 이해하는 데 도움이 되는 문장입니다.",
+          "media": [],
+          "keywords": [
+            "AI 인용 검증 방법",
+            "학술 데이터베이스 인용 확인"
+          ],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 10,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "AI 인용 검증의 중요성을 요약한 문장입니다.",
+          "media": [],
+          "keywords": [
+            "AI 인용 존재 여부 확인",
+            "생성형 AI 출처 검증"
+          ],
+          "sites": [],
+          "official": []
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "sentences": 10,
+    "keyMatch": {
+      "type": 93,
+      "level": 93,
+      "both": 93,
+      "judged": 30
+    },
+    "consistency": {
+      "same": 7,
+      "total": 10,
+      "pct": 70
+    },
+    "judgmentFlags": []
+  }
+}

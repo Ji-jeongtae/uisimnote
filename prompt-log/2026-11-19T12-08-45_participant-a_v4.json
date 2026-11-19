@@ -1,0 +1,907 @@
+{
+  "at": "2026-11-19T12:11:08.961Z",
+  "model": "gemini-2.5-flash",
+  "promptVersion": "v4",
+  "keyName": "정답표",
+  "input": {
+    "question": "글로벌 경영전략 과목 수강중이고 cj엔터테이먼트 기업을 선정한 후 팀프로젝트 발표를 준비중이야. 난 3번 파트(tvn 드라마, 영화 제작)를 담당했어. 피피티 어떤식으로 만들어야 하는지 자료조사(출처포함)+슬라이드 구성 알려줘. 교재 본문 내용도 참고해서 조금 더 구체적으로 자료조사해줘.",
+    "sentences": [
+      {
+        "id": 92,
+        "text": "[자료조사: 왜 제작사를 분리했을까?] 스튜디오드래곤은 2016년 CJ ENM의 드라마 사업부문을 물적분할해 설립됐어.",
+        "key": {
+          "no": 1,
+          "types": [
+            "날짜·법령"
+          ],
+          "level": "must"
+        }
+      },
+      {
+        "id": 94,
+        "text": "[자료조사: 왜 제작사를 분리했을까?] 이후 CJ ENM은 스튜디오드래곤뿐 아니라 CJ ENM STUDIOS, 미국의 FIFTH SEASON(구 엔데버 콘텐트) 등을 활용하는 멀티스튜디오 전략을 추진했어.",
+        "key": {
+          "no": 2,
+          "types": [
+            "인물·기관 발언"
+          ],
+          "level": "must"
+        }
+      },
+      {
+        "id": 110,
+        "text": "[《공동경비구역 JSA》(2000)] 교재에서는 500만 명 이상의 관객을 동원한 성공 사례로 소개해.",
+        "key": {
+          "no": 3,
+          "types": [
+            "통계·수치",
+            "논문·책 인용"
+          ],
+          "level": "must"
+        }
+      },
+      {
+        "id": 117,
+        "text": "[《기생충》(2019)] 한국 사회의 계층 문제를 다룬 작품으로, 2020년 아카데미 작품상·감독상·각본상·국제장편영화상을 수상하며 글로벌 경쟁력을 입증했어.",
+        "key": {
+          "no": 4,
+          "types": [
+            "날짜·법령"
+          ],
+          "level": "must"
+        }
+      },
+      {
+        "id": 137,
+        "text": "[《눈물의 여왕》(2024)] CJ ENM은 이 작품을 글로벌 시청자에게 높은 성과를 거둔 대표작으로 소개했으며, 회사의 문화사업 30주년 비저너리 선정작에도 포함했어.",
+        "key": {
+          "no": 5,
+          "types": [
+            "인물·기관 발언"
+          ],
+          "level": "must"
+        }
+      },
+      {
+        "id": 169,
+        "text": "[최종 분석] 2025년 CJ ENM은 연결기준 매출 5조 1,345억 원, 영업이익 1,329억 원을 기록했다고 발표했어.",
+        "key": {
+          "no": 6,
+          "types": [
+            "통계·수치"
+          ],
+          "level": "must"
+        }
+      },
+      {
+        "id": 170,
+        "text": "[최종 분석] 다만 이는 커머스 등을 포함한 CJ ENM 전체 실적이지, 드라마 제작 사업만의 성과는 아니야.",
+        "key": {
+          "no": 7,
+          "types": [
+            "통계·수치"
+          ],
+          "level": "must"
+        }
+      },
+      {
+        "id": 171,
+        "text": "회사는 글로벌 IP 수익 다각화와 티빙의 손익 개선 등을 주요 실적 요인으로 제시했어.",
+        "key": {
+          "no": 8,
+          "types": [
+            "인물·기관 발언"
+          ],
+          "level": "must"
+        }
+      },
+      {
+        "id": 187,
+        "text": "CJ는 역량 있는 제작진을 영입하고 창작 자율성을 보장했으며, 장기적인 관점에서 콘텐츠 제작에 투자했습니다.",
+        "key": {
+          "no": 9,
+          "types": [
+            "인과관계",
+            "일반화"
+          ],
+          "level": "should"
+        }
+      },
+      {
+        "id": 168,
+        "text": "[최종 분석] 또한 글로벌 OTT와 협력하면 해외 진출 기회를 넓힐 수 있지만, 자체 플랫폼의 경쟁력까지 자동으로 확보되는 것은 아니야.",
+        "key": {
+          "no": 10,
+          "types": [
+            "의견·요약",
+            "개념 정의",
+            "일반 상식"
+          ],
+          "level": "info"
+        }
+      }
+    ]
+  },
+  "runs": [
+    {
+      "run": 1,
+      "ms": 23411,
+      "missing": 0,
+      "items": [
+        {
+          "id": 92,
+          "level": "must",
+          "types": [
+            "날짜·법령",
+            "인물·기관 발언"
+          ],
+          "reason": "스튜디오드래곤의 설립 시점과 주체를 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "스튜디오드래곤 설립",
+            "CJ ENM 물적분할",
+            "스튜디오드래곤 2016"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            },
+            {
+              "name": "스튜디오드래곤",
+              "domain": "studiodragon.com"
+            }
+          ]
+        },
+        {
+          "id": 94,
+          "level": "must",
+          "types": [
+            "인물·기관 발언"
+          ],
+          "reason": "CJ ENM의 멀티스튜디오 전략과 관련 계열사 정보를 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 멀티스튜디오 전략",
+            "FIFTH SEASON",
+            "CJ ENM STUDIOS"
+          ],
+          "sites": [
+            "dart",
+            "korea",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 110,
+          "level": "must",
+          "types": [
+            "논문·책 인용",
+            "통계·수치"
+          ],
+          "reason": "교재에서 해당 영화가 성공 사례로 언급되었는지, 관객 수가 정확한지 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "공동경비구역 JSA 교재",
+            "공동경비구역 JSA 관객수"
+          ],
+          "sites": [
+            "nl",
+            "kobis"
+          ],
+          "official": []
+        },
+        {
+          "id": 117,
+          "level": "must",
+          "types": [
+            "날짜·법령",
+            "일반 상식"
+          ],
+          "reason": "영화 '기생충'의 아카데미 수상 내역과 시점을 정확히 확인해야 합니다.",
+          "media": [],
+          "keywords": [
+            "기생충 아카데미 수상",
+            "기생충 2020 아카데미"
+          ],
+          "sites": [
+            "bigkinds"
+          ],
+          "official": []
+        },
+        {
+          "id": 137,
+          "level": "must",
+          "types": [
+            "인물·기관 발언"
+          ],
+          "reason": "CJ ENM이 해당 작품을 대표작 및 비저너리 선정작으로 소개했는지 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 눈물의 여왕",
+            "CJ ENM 문화사업 30주년 비저너리"
+          ],
+          "sites": [
+            "bigkinds",
+            "korea"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 169,
+          "level": "must",
+          "types": [
+            "통계·수치",
+            "인물·기관 발언",
+            "날짜·법령"
+          ],
+          "reason": "CJ ENM의 2025년 예상 실적 발표 내용과 수치를 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official",
+            "statistics"
+          ],
+          "keywords": [
+            "CJ ENM 2025년 실적 발표",
+            "CJ ENM 연결기준 매출 영업이익"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 170,
+          "level": "info",
+          "types": [
+            "의견·요약"
+          ],
+          "reason": "해당 문장은 앞선 실적 발표의 범위를 설명하는 내용입니다.",
+          "media": [],
+          "keywords": [],
+          "sites": [],
+          "official": []
+        },
+        {
+          "id": 171,
+          "level": "must",
+          "types": [
+            "인물·기관 발언"
+          ],
+          "reason": "회사가 제시한 주요 실적 요인이 무엇인지 공식 발표에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 실적 요인",
+            "티빙 손익 개선",
+            "글로벌 IP 수익 다각화"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 187,
+          "level": "must",
+          "types": [
+            "인물·기관 발언"
+          ],
+          "reason": "CJ의 제작진 영입, 창작 자율성 보장, 장기 투자 전략에 대한 내용을 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ 콘텐츠 제작 전략",
+            "CJ 제작진 영입",
+            "CJ 창작 자율성"
+          ],
+          "sites": [
+            "bigkinds",
+            "korea"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 168,
+          "level": "should",
+          "types": [
+            "인과관계",
+            "의견·요약"
+          ],
+          "reason": "글로벌 OTT 협력과 자체 플랫폼 경쟁력 확보 간의 관계에 대한 분석 내용을 확인해야 합니다.",
+          "media": [],
+          "keywords": [
+            "글로벌 OTT 협력",
+            "자체 플랫폼 경쟁력",
+            "해외 진출 전략"
+          ],
+          "sites": [
+            "bigkinds"
+          ],
+          "official": []
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "ms": 22421,
+      "missing": 0,
+      "items": [
+        {
+          "id": 92,
+          "level": "must",
+          "types": [
+            "날짜·법령",
+            "인물·기관 발언"
+          ],
+          "reason": "스튜디오드래곤의 설립 시점과 분할 주체를 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "스튜디오드래곤 설립",
+            "CJ ENM 물적분할",
+            "스튜디오드래곤 연혁"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            },
+            {
+              "name": "스튜디오드래곤",
+              "domain": "studiodragon.com"
+            }
+          ]
+        },
+        {
+          "id": 94,
+          "level": "must",
+          "types": [
+            "인물·기관 발언",
+            "개념 정의"
+          ],
+          "reason": "CJ ENM이 어떤 멀티스튜디오 전략을 추진했는지 공식 발표에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 멀티스튜디오 전략",
+            "FIFTH SEASON 인수",
+            "CJ ENM STUDIOS"
+          ],
+          "sites": [
+            "dart",
+            "korea",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            },
+            {
+              "name": "FIFTH SEASON",
+              "domain": "fifthseason.com"
+            }
+          ]
+        },
+        {
+          "id": 110,
+          "level": "must",
+          "types": [
+            "논문·책 인용",
+            "통계·수치",
+            "날짜·법령"
+          ],
+          "reason": "교재에서 해당 영화를 어떻게 소개했는지, 관객 수가 정확한지 원문에서 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "공동경비구역 JSA 관객수",
+            "영화 JSA 교재 분석"
+          ],
+          "sites": [
+            "nl",
+            "kobis"
+          ],
+          "official": []
+        },
+        {
+          "id": 117,
+          "level": "must",
+          "types": [
+            "날짜·법령",
+            "일반 상식"
+          ],
+          "reason": "영화의 수상 내역과 시점이 정확한지 공식 기록에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "기생충 아카데미 수상",
+            "영화 기생충 개봉"
+          ],
+          "sites": [
+            "bigkinds",
+            "kobis"
+          ],
+          "official": []
+        },
+        {
+          "id": 137,
+          "level": "must",
+          "types": [
+            "인물·기관 발언",
+            "날짜·법령"
+          ],
+          "reason": "CJ ENM이 해당 작품을 어떻게 소개했는지 공식 발표에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 눈물의 여왕",
+            "CJ ENM 문화사업 비저너리"
+          ],
+          "sites": [
+            "bigkinds",
+            "korea"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 169,
+          "level": "must",
+          "types": [
+            "날짜·법령",
+            "통계·수치",
+            "인물·기관 발언"
+          ],
+          "reason": "CJ ENM의 발표 내용과 2025년 실적 수치가 정확한지 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official",
+            "statistics"
+          ],
+          "keywords": [
+            "CJ ENM 실적 발표",
+            "CJ ENM 연결기준 매출 영업이익"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 170,
+          "level": "info",
+          "types": [
+            "의견·요약",
+            "개념 정의"
+          ],
+          "reason": "CJ ENM의 실적 구성에 대한 설명이 적절한지 참고 자료를 통해 확인해 보세요.",
+          "media": [],
+          "keywords": [
+            "CJ ENM 사업 부문",
+            "CJ ENM 실적 구성"
+          ],
+          "sites": [
+            "dart"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 171,
+          "level": "must",
+          "types": [
+            "인물·기관 발언"
+          ],
+          "reason": "회사가 제시한 주요 실적 요인이 무엇인지 공식 발표에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 실적 요인",
+            "티빙 손익 개선",
+            "글로벌 IP 수익 다각화"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 187,
+          "level": "must",
+          "types": [
+            "인물·기관 발언"
+          ],
+          "reason": "CJ의 콘텐츠 제작 전략과 투자 방향이 공식 발표와 일치하는지 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ 콘텐츠 제작 전략",
+            "CJ 제작진 영입",
+            "CJ 창작 자율성"
+          ],
+          "sites": [
+            "bigkinds",
+            "korea"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 168,
+          "level": "should",
+          "types": [
+            "인과관계",
+            "의견·요약"
+          ],
+          "reason": "글로벌 OTT 협력의 효과와 자체 플랫폼 경쟁력 확보에 대한 분석이 타당한지 확인해 보세요.",
+          "media": [],
+          "keywords": [
+            "글로벌 OTT 협력 효과",
+            "자체 플랫폼 경쟁력",
+            "콘텐츠 해외 진출 전략"
+          ],
+          "sites": [
+            "bigkinds"
+          ],
+          "official": []
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "ms": 22513,
+      "missing": 0,
+      "items": [
+        {
+          "id": 92,
+          "level": "must",
+          "types": [
+            "날짜·법령",
+            "인물·기관 발언"
+          ],
+          "reason": "스튜디오드래곤의 설립 시점과 분할 주체를 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "스튜디오드래곤 설립",
+            "CJ ENM 물적분할",
+            "스튜디오드래곤 연혁"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            },
+            {
+              "name": "스튜디오드래곤",
+              "domain": "studiodragon.com"
+            }
+          ]
+        },
+        {
+          "id": 94,
+          "level": "must",
+          "types": [
+            "인물·기관 발언",
+            "개념 정의"
+          ],
+          "reason": "CJ ENM이 어떤 멀티스튜디오 전략을 추진했는지 공식 발표에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 멀티스튜디오 전략",
+            "FIFTH SEASON 인수",
+            "CJ ENM STUDIOS"
+          ],
+          "sites": [
+            "dart",
+            "korea",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            },
+            {
+              "name": "FIFTH SEASON",
+              "domain": "fifthseason.com"
+            }
+          ]
+        },
+        {
+          "id": 110,
+          "level": "must",
+          "types": [
+            "논문·책 인용",
+            "통계·수치",
+            "날짜·법령"
+          ],
+          "reason": "교재에서 해당 영화를 어떻게 소개했는지, 관객 수가 정확한지 원문에서 확인해야 합니다.",
+          "media": [
+            "academic",
+            "statistics"
+          ],
+          "keywords": [
+            "공동경비구역 JSA 관객수",
+            "영화 JSA 교재 분석"
+          ],
+          "sites": [
+            "nl",
+            "kobis"
+          ],
+          "official": []
+        },
+        {
+          "id": 117,
+          "level": "must",
+          "types": [
+            "날짜·법령",
+            "일반 상식"
+          ],
+          "reason": "영화의 수상 내역과 시점이 정확한지 공식 기록에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "기생충 아카데미 수상",
+            "영화 기생충 개봉"
+          ],
+          "sites": [
+            "bigkinds",
+            "kobis"
+          ],
+          "official": []
+        },
+        {
+          "id": 137,
+          "level": "must",
+          "types": [
+            "인물·기관 발언",
+            "날짜·법령"
+          ],
+          "reason": "CJ ENM이 해당 작품을 어떻게 소개했는지 공식 발표에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 눈물의 여왕",
+            "CJ ENM 문화사업 비저너리"
+          ],
+          "sites": [
+            "bigkinds",
+            "korea"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 169,
+          "level": "must",
+          "types": [
+            "날짜·법령",
+            "통계·수치",
+            "인물·기관 발언"
+          ],
+          "reason": "CJ ENM의 발표 내용과 2025년 실적 수치가 정확한지 공식 자료에서 확인해야 합니다.",
+          "media": [
+            "official",
+            "statistics"
+          ],
+          "keywords": [
+            "CJ ENM 실적 발표",
+            "CJ ENM 연결기준 매출 영업이익"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 170,
+          "level": "info",
+          "types": [
+            "의견·요약",
+            "개념 정의"
+          ],
+          "reason": "CJ ENM의 실적 구성에 대한 설명이 적절한지 참고 자료를 통해 확인해 보세요.",
+          "media": [],
+          "keywords": [
+            "CJ ENM 사업 부문",
+            "CJ ENM 실적 구성"
+          ],
+          "sites": [
+            "dart"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 171,
+          "level": "must",
+          "types": [
+            "인물·기관 발언"
+          ],
+          "reason": "회사가 제시한 주요 실적 요인이 무엇인지 공식 발표에서 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ ENM 실적 요인",
+            "티빙 손익 개선",
+            "글로벌 IP 수익 다각화"
+          ],
+          "sites": [
+            "dart",
+            "bigkinds"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 187,
+          "level": "must",
+          "types": [
+            "인물·기관 발언"
+          ],
+          "reason": "CJ의 콘텐츠 제작 전략과 투자 방향이 공식 발표와 일치하는지 확인해야 합니다.",
+          "media": [
+            "official"
+          ],
+          "keywords": [
+            "CJ 콘텐츠 제작 전략",
+            "CJ 제작진 영입",
+            "CJ 창작 자율성"
+          ],
+          "sites": [
+            "bigkinds",
+            "korea"
+          ],
+          "official": [
+            {
+              "name": "CJ ENM",
+              "domain": "cjenm.com"
+            }
+          ]
+        },
+        {
+          "id": 168,
+          "level": "should",
+          "types": [
+            "인과관계",
+            "의견·요약"
+          ],
+          "reason": "글로벌 OTT 협력의 효과와 자체 플랫폼 경쟁력 확보에 대한 분석이 타당한지 확인해 보세요.",
+          "media": [],
+          "keywords": [
+            "글로벌 OTT 협력 효과",
+            "자체 플랫폼 경쟁력",
+            "콘텐츠 해외 진출 전략"
+          ],
+          "sites": [
+            "bigkinds"
+          ],
+          "official": []
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "sentences": 10,
+    "keyMatch": {
+      "type": 80,
+      "level": 70,
+      "both": 70,
+      "judged": 30
+    },
+    "consistency": {
+      "same": 6,
+      "total": 10,
+      "pct": 60
+    },
+    "judgmentFlags": []
+  }
+}

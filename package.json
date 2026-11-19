@@ -1,0 +1,13 @@
+{
+  "name": "uisimnote",
+  "version": "0.1.0",
+  "private": true,
+  "description": "의심노트 — AI 자료조사 답변 검증 연습 도구 (팀 더블체크)",
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.mjs",
+    "test": "node scripts/test-split.mjs",
+    "prompt": "node scripts/run-prompt.mjs"
+  },
+  "engines": { "node": ">=18" }
+}

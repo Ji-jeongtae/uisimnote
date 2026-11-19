@@ -1,0 +1,161 @@
+{
+  "at": "2026-11-19T13:09:27.073Z",
+  "model": "gemini-2.5-flash",
+  "promptVersion": "v3 (2026-11-19)",
+  "purpose": "예시 분류 교체",
+  "input": {
+    "question": "글로벌 경영전략 과목 수강중이고 cj엔터테이먼트 기업을 선정한 후 팀프로젝트 발표를 준비중이야. 난 3번 파트(tvn 드라마, 영화 제작)를 담당했어. 피피티 어떤식으로 만들어야 하는지 자료조사(출처포함)+슬라이드 구성 알려줘. 교재 본문 내용도 참고해서 조금 더 구체적으로 자료조사해줘.",
+    "sentences": [
+      {
+        "id": 92,
+        "text": "[자료조사: 왜 제작사를 분리했을까?] 스튜디오드래곤은 2016년 CJ ENM의 드라마 사업부문을 물적분할해 설립됐어."
+      },
+      {
+        "id": 110,
+        "text": "[《공동경비구역 JSA》(2000)] 교재에서는 500만 명 이상의 관객을 동원한 성공 사례로 소개해."
+      },
+      {
+        "id": 117,
+        "text": "[《기생충》(2019)] 한국 사회의 계층 문제를 다룬 작품으로, 2020년 아카데미 작품상·감독상·각본상·국제장편영화상을 수상하며 글로벌 경쟁력을 입증했어."
+      },
+      {
+        "id": 137,
+        "text": "[《눈물의 여왕》(2024)] CJ ENM은 이 작품을 글로벌 시청자에게 높은 성과를 거둔 대표작으로 소개했으며, 회사의 문화사업 30주년 비저너리 선정작에도 포함했어."
+      },
+      {
+        "id": 169,
+        "text": "[최종 분석] 2025년 CJ ENM은 연결기준 매출 5조 1,345억 원, 영업이익 1,329억 원을 기록했다고 발표했어."
+      }
+    ]
+  },
+  "raw": "{\"items\":[{\"id\":92,\"types\":[\"날짜·법령\",\"인물·기관 발언\"],\"level\":\"must\",\"reason\":\"스튜디오드래곤의 설립 시점과 CJ ENM의 물적분할 여부를 확인해야 합니다.\",\"media\":[\"official\"],\"keywords\":[\"스튜디오드래곤 설립\",\"CJ ENM 물적분할\",\"Studio Dragon establishment CJ ENM spin-off\"],\"sites\":[\"dart\",\"bigkinds\"],\"official\":[{\"name\":\"CJ ENM\",\"domain\":\"cjenm.com\"}]},{\"id\":110,\"types\":[\"논문·책 인용\",\"통계·수치\"],\"level\":\"must\",\"reason\":\"교재에서 해당 영화의 관객 수와 성공 사례 언급 여부를 확인해야 합니다.\",\"media\":[\"academic\",\"statistics\"],\"keywords\":[\"공동경비구역 JSA 관객수\",\"영화 흥행 교재 사례\",\"JSA movie audience textbook\"],\"sites\":[\"nl\",\"kobis\"],\"official\":[]},{\"id\":117,\"types\":[\"날짜·법령\",\"인물·기관 발언\"],\"level\":\"must\",\"reason\":\"영화 '기생충'의 아카데미상 수상 내역과 수상 연도를 확인해야 합니다.\",\"media\":[\"official\"],\"keywords\":[\"기생충 아카데미 수상\",\"Parasite Academy Awards\",\"아카데미 시상식 수상작\"],\"sites\":[\"bigkinds\"],\"official\":[]},{\"id\":137,\"types\":[\"인물·기관 발언\"],\"level\":\"must\",\"reason\":\"CJ ENM이 해당 작품을 대표작 및 비저너리 선정작으로 소개했는지 확인해야 합니다.\",\"media\":[\"official\"],\"keywords\":[\"CJ ENM 눈물의 여왕 대표작\",\"CJ ENM 문화사업 비저너리\",\"Queen of Tears CJ ENM achievement\"],\"sites\":[\"bigkinds\"],\"official\":[{\"name\":\"CJ ENM\",\"domain\":\"cjenm.com\"}]},{\"id\":169,\"types\":[\"통계·수치\",\"인물·기관 발언\",\"날짜·법령\"],\"level\":\"must\",\"reason\":\"CJ ENM의 2025년 연결기준 매출과 영업이익 발표 내용을 확인해야 합니다.\",\"media\":[\"official\",\"statistics\"],\"keywords\":[\"CJ ENM 2025년 실적 발표\",\"CJ ENM 연결기준 매출 영업이익\",\"CJ ENM 2025 revenue operating profit\"],\"sites\":[\"dart\",\"bigkinds\"],\"official\":[{\"name\":\"CJ ENM\",\"domain\":\"cjenm.com\"}]}]}",
+  "items": [
+    {
+      "id": 92,
+      "level": "must",
+      "types": [
+        "날짜·법령",
+        "인물·기관 발언"
+      ],
+      "reason": "스튜디오드래곤의 설립 시점과 CJ ENM의 물적분할 여부를 확인해야 합니다.",
+      "media": [
+        "official"
+      ],
+      "keywords": [
+        "스튜디오드래곤 설립",
+        "CJ ENM 물적분할",
+        "Studio Dragon establishment CJ ENM spin-off"
+      ],
+      "sites": [
+        "dart",
+        "bigkinds"
+      ],
+      "official": [
+        {
+          "name": "CJ ENM",
+          "domain": "cjenm.com"
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "level": "must",
+      "types": [
+        "논문·책 인용",
+        "통계·수치"
+      ],
+      "reason": "교재에서 해당 영화의 관객 수와 성공 사례 언급 여부를 확인해야 합니다.",
+      "media": [
+        "academic",
+        "statistics"
+      ],
+      "keywords": [
+        "공동경비구역 JSA 관객수",
+        "영화 흥행 교재 사례",
+        "JSA movie audience textbook"
+      ],
+      "sites": [
+        "nl",
+        "kobis"
+      ],
+      "official": []
+    },
+    {
+      "id": 117,
+      "level": "must",
+      "types": [
+        "날짜·법령",
+        "인물·기관 발언"
+      ],
+      "reason": "영화 '기생충'의 아카데미상 수상 내역과 수상 연도를 확인해야 합니다.",
+      "media": [
+        "official"
+      ],
+      "keywords": [
+        "기생충 아카데미 수상",
+        "Parasite Academy Awards",
+        "아카데미 시상식 수상작"
+      ],
+      "sites": [
+        "bigkinds"
+      ],
+      "official": []
+    },
+    {
+      "id": 137,
+      "level": "must",
+      "types": [
+        "인물·기관 발언"
+      ],
+      "reason": "CJ ENM이 해당 작품을 대표작 및 비저너리 선정작으로 소개했는지 확인해야 합니다.",
+      "media": [
+        "official"
+      ],
+      "keywords": [
+        "CJ ENM 눈물의 여왕 대표작",
+        "CJ ENM 문화사업 비저너리",
+        "Queen of Tears CJ ENM achievement"
+      ],
+      "sites": [
+        "bigkinds"
+      ],
+      "official": [
+        {
+          "name": "CJ ENM",
+          "domain": "cjenm.com"
+        }
+      ]
+    },
+    {
+      "id": 169,
+      "level": "must",
+      "types": [
+        "통계·수치",
+        "인물·기관 발언",
+        "날짜·법령"
+      ],
+      "reason": "CJ ENM의 2025년 연결기준 매출과 영업이익 발표 내용을 확인해야 합니다.",
+      "media": [
+        "official",
+        "statistics"
+      ],
+      "keywords": [
+        "CJ ENM 2025년 실적 발표",
+        "CJ ENM 연결기준 매출 영업이익",
+        "CJ ENM 2025 revenue operating profit"
+      ],
+      "sites": [
+        "dart",
+        "bigkinds"
+      ],
+      "official": [
+        {
+          "name": "CJ ENM",
+          "domain": "cjenm.com"
+        }
+      ]
+    }
+  ],
+  "missing": 0,
+  "ms": 11293
+}
