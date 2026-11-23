@@ -476,17 +476,23 @@ const splitView = (head, main, side, cls = '') => `
 // 비교 표시 기호(2026-11-24 정태: 표시를 줄임). 번호 옆에 하나만, 빨간색(#E5484D) 하나만.
 //  확인 필수 + 먼저 찾음 = ● / 확인 필수 + 놓침 = ✓ + 작은 '놓침' / 확인 권장 = ▲ / 나만 의심·참고 = 표시 없음
 //  '이유도 같음'은 기호 없이, 문장을 누르면 AI 조교의 한마디에 한 줄로만.
+// 빨간펜으로 손으로 그은 듯한 기호(살짝 비뚤게). pathLength=1이라 CSS로 0.4초 안에 그어지게 할 수 있다.
+const PEN = {
+  dot: '<svg class="pen pen-dot" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="ink-fill" pathLength="1" d="M10.2 4.7c3-.3 5.3 2 5.2 5-.1 3.1-2.6 5.3-5.6 5.2-2.9-.1-4.8-2.4-4.6-5.2.2-2.7 2.4-4.8 5.2-5.2"/></svg>',
+  chk: '<svg class="pen pen-chk" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path pathLength="1" d="M3.4 10.6c1.4 1.2 2.6 2.7 3.7 4.4 2.2-4.5 5.2-8 9.4-10.8"/></svg>',
+  tri: '<svg class="pen pen-tri" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="ink-fill" pathLength="1" d="M10.3 3.8c2.1 3.7 4.1 7.4 6.3 11.7-4.4.4-8.7.4-13.2.2 2.2-4.1 4.4-8 6.9-11.9"/></svg>',
+};
 function markOf(level, mine) {
   if (level === 'must') return mine
-    ? { sym: '●', g: '<i class="g mk" aria-hidden="true">●</i>', label: '확인 필수, 먼저 찾음' }
-    : { sym: '✓', g: '<i class="g mk" aria-hidden="true">✓</i><small class="g-miss">놓침</small>', label: '확인 필수, 놓침' };
-  if (level === 'should') return { sym: '▲', g: '<i class="g mk" aria-hidden="true">▲</i>', label: mine ? '확인 권장, 먼저 찾음' : '확인 권장, 놓침' };
+    ? { sym: PEN.dot, g: `<i class="g mk">${PEN.dot}</i>`, label: '확인 필수, 먼저 찾음' }
+    : { sym: PEN.chk, g: `<i class="g mk">${PEN.chk}</i><small class="g-miss">놓침</small>`, label: '확인 필수, 놓침' };
+  if (level === 'should') return { sym: PEN.tri, g: `<i class="g mk">${PEN.tri}</i>`, label: mine ? '확인 권장, 먼저 찾음' : '확인 권장, 놓침' };
   return { sym: '', g: '', label: '' };
 }
 const LEGEND_HTML = `<ul class="legend">
-      <li><i class="g mk">●</i>먼저 찾음</li>
-      <li><i class="g mk">✓</i>놓침</li>
-      <li><i class="g mk">▲</i>확인 권장</li>
+      <li><i class="g mk">${PEN.dot}</i>먼저 찾음</li>
+      <li><i class="g mk">${PEN.chk}</i>놓침</li>
+      <li><i class="g mk">${PEN.tri}</i>확인 권장</li>
     </ul>`;
 
 function viewStep1() {
@@ -757,7 +763,7 @@ function viewStep3() {
   </div>
   <div id="cmp-groups">
     ${a.missed.length ? `<div class="panel side-list">
-      <h4><i class="g mk">✓</i> 놓친 주장 ${a.missed.length}개 <span class="muted small">왜 놓쳤는지 생각해 보세요</span></h4>
+      <h4><i class="g mk">${PEN.chk}</i> 놓친 주장 ${a.missed.length}개 <span class="muted small">왜 놓쳤는지 생각해 보세요</span></h4>
       <div class="pick-row">${a.missed.map((id) => `<button type="button" class="pick ${id === activeId ? 'on' : ''}" data-pick="${id}" title="${esc(state.sentences.find((s) => s.id === id)?.text)}"><b>${a.number.get(id)}</b> ${esc(typesOf(a.byId.get(id)).join(' · '))}</button>`).join('')}</div>
     </div>` : '<div class="panel tint small">놓친 주장이 없어요.</div>'}
     <div class="panel side-detail" id="side-detail">${claimDetail(activeId, a)}</div>
