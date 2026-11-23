@@ -1082,7 +1082,6 @@ function viewStep5() {
   const a = analysis();
   const vs = verifyStats(a);
   const hist = recordHistory(a, vs) || store.get(HISTORY_KEY, []);
-  const histRows = hist.filter((h) => h.flagged > 0).slice(-8);
   const picked = state.doubtLog?.ids.length ?? state.selected.length;
   const head = '<h2>5. 증빙서 미리보기</h2>';
   const main = `
@@ -1117,23 +1116,8 @@ function viewStep5() {
     <button class="primary small-btn" data-action="copy-all">증빙서 전체 복사</button>
   </div>
   <div class="panel side-metrics" title="AI 표시 전에 고른 문장 ${picked}개 · 회차 기록은 이 브라우저에만 저장됩니다">
-    <div class="m-grid">
-    <div class="metrics2">
-      <div class="stat hero"><div class="v"><span id="ratio5">${a.ratio}</span><small>%</small></div><div class="k">먼저 의심 (${a.first.length}/${a.flagged.length})</div></div>
-      <div class="stat"><div class="v"><span id="reason5">${a.reasonRatio}</span><small>%</small></div><div class="k">이유도 같음 (${a.matched.length}/${a.predicted.length})</div></div>
-    </div>
-    <div>
-    <div class="history-legend small"><span><i class="k1"></i>먼저 의심</span><span><i class="k2"></i>이유도 같음</span></div>
-    <div class="history">${histRows.map((h, i) => `
-      <div class="row2 ${h.id === state.sessionId ? 'now' : ''}">
-        <span class="lbl">${i + 1}회차 <span class="muted small">${esc(h.date.slice(5).replace('-', '/'))}</span></span>
-        <span class="bars">
-          <span class="bar"><i class="b1" style="width:${h.ratio}%"></i></span><span class="pct">${h.ratio}%</span>
-          <span class="bar"><i class="b2" style="width:${h.reasonRatio ?? 0}%"></i></span><span class="pct">${h.predicted ? `${h.reasonRatio}%` : '-'}</span>
-        </span>
-      </div>`).join('') || '<p class="muted">기록이 없습니다.</p>'}</div>
-    </div>
-    </div>
+    <!-- 5단계는 '먼저 의심한 비율' 하나만 크게(2026-11-24 정태). 이유도 같음·회차 막대는 뺐다 -->
+    <div class="stat hero big"><div class="k">AI 표시 전 먼저 의심한 비율</div><div class="v"><span id="ratio5">${a.ratio}</span><small>%</small></div><div class="k">확인이 필요한 ${a.flagged.length}개 중 ${a.first.length}개를 먼저 찾음</div></div>
     ${missedNote(hist.find((h) => h.id === state.sessionId))}
   </div>
   ${nextQuestionCard(a)}
@@ -1256,7 +1240,7 @@ function render(focus = true) {
   });
   document.getElementById('demo-badge').hidden = !DEMO;
   if (state.step === 3 && state.ai && pendingReveal) { pendingReveal = false; runReveal(); }
-  if (state.step === 5) { const a = analysis(); countUp(document.getElementById('ratio5'), a.ratio); countUp(document.getElementById('reason5'), a.reasonRatio); }
+  if (state.step === 5) { const a = analysis(); countUp(document.getElementById('ratio5'), a.ratio); }
   if (focus) { $view.focus({ preventScroll: true }); window.scrollTo(0, 0); }
 }
 

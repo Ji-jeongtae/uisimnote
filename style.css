@@ -698,3 +698,7 @@ button.kw.kw-copy span { font-size: 13px; color: var(--ink-muted); }
 .fix-modes input:focus-visible + span { outline: 3px solid var(--brand); outline-offset: 2px; }
 .fix-modes input:checked + span { background: var(--doubt-tint); border-color: var(--doubt); color: var(--doubt); }
 .fix-del-note { align-self: end; margin: 0 0 .9rem; }
+.side-metrics .stat.big { padding: 1rem 1.2rem; text-align: center; }
+.side-metrics .stat.big .v, .side-metrics .stat.big .v span { font-size: 88px; line-height: 1.05; }
+.side-metrics .stat.big .v small { font-size: 32px; }
+.side-metrics .stat.big .k { font-size: 15px; }
