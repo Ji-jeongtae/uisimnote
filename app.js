@@ -118,9 +118,11 @@ for (const [id, r] of Object.entries(state.reasons || {})) {
 }
 for (const [id, r] of Object.entries(state.autoReasons || {})) state.autoReasons[id] = mergeDate(r || []);
 // 예시 답변 (저장된 분류 결과 포함). 이 답변들은 Gemini를 부르지 않고 저장된 결과를 쓴다.
+// 시연 기본은 연습용 답변(2026-11-24). 친구 답변 예시는 두 번째로.
 const EXAMPLES = [
-  { key: 'demo', file: 'demo.json', label: 'AI 인용 오류' },
+  { key: 'practice', file: 'examples/practice-writing.json', label: '연습용 · AI와 대학생 글쓰기' },
   { key: 'pa', file: 'examples/participant-a.json', label: '시범 사용 A · CJ ENM 팀플' },
+  { key: 'demo', file: 'demo.json', label: 'AI 인용 오류' },
 ];
 const exampleCache = {};
 async function loadExample(key) {
@@ -142,6 +144,11 @@ async function findExample(answer) {
   return null;
 }
 const cachedExample = (answer) => Object.values(exampleCache).find((d) => d.result && d.answer.trim() === (answer || '').trim()) || null;
+// 연습용 예시(오류를 일부러 넣은 답변)를 쓰는 중이면 모든 단계 위에 알린다
+const practiceNote = () => {
+  const p = cachedExample(state.answer)?.practice;
+  return p ? `<p class="practice-note" role="note">${esc(p)}</p>` : '';
+};
 let demoData = null;
 let loading = false;
 let lastError = null;
@@ -281,6 +288,9 @@ function verifyStats(a) {
 }
 
 const typesOf = (it) => (Array.isArray(it?.types) && it.types.length ? it.types : (it?.type ? [it.type] : []));
+// 대표 유형: '의견·요약' 같은 참고 유형보다 확인 방법이 있는 유형(CHECK_OF)을 앞세운다
+// (2026-11-24: Gemini가 인과 단정 문장을 '의견·요약+인과관계'로 주면 놓친 유형이 '의견·요약'으로 묶였음)
+const mainType = (it) => { const t = typesOf(it); return t.find((x) => CHECK_OF[x]) || t[0]; };
 const circled = (n) => (n >= 1 && n <= 20 ? String.fromCharCode(0x2460 + n - 1) : `(${n})`);
 const fmtDate = (d) => (d || '').replace(/-/g, '.');
 const fmtTime = (iso) => {
@@ -428,7 +438,7 @@ function renderAnswer(mode) {
         const locked = !!state.ai;
         const span = `${br}${pre}<span class="sent${sel.has(s.id) ? ' has-mark' : ''}" tabindex="${locked ? -1 : 0}" data-id="${s.id}" ${locked ? 'aria-disabled="true"' : 'aria-label="문장. 드래그해서 형광펜을 긋거나 Enter로 문장 전체에 긋기"'}>${markedText(s, !locked)}</span> `;
         // 비교 후 2단계: 놓친 문장 아래에 '○ 놓침 · 유형' (3단계와 같은 기호)
-        const missedTag = locked && a?.missed.includes(s.id) ? `<span class="missed-tag"><i class="g missed">○</i> 놓침 · ${esc(typesOf(a.byId.get(s.id))[0] || '')}</span>` : '';
+        const missedTag = locked && a?.missed.includes(s.id) ? `<span class="missed-tag"><i class="g missed">○</i> 놓침 · ${esc(mainType(a.byId.get(s.id)) || '')}</span>` : '';
         return span + (sel.has(s.id) ? reasonChips(s.id, locked) : '') + missedTag;
       }
       const it = a.byId.get(s.id);
@@ -678,7 +688,7 @@ function predictionBlock(id, it, a) {
   if (manualTypesOf(id).length) { // 자동으로 켜진 칩만 있으면 비교하지 않는다(지표와 같은 기준)
     if (reasonMatches(id, it)) cmp = '<span class="pred-same">AI 분류와 같음</span>';
     else {
-      const t = types[0];
+      const t = mainType(it);
       cmp = t ? `<span>AI는 '${esc(t)}'${josa(t, '으로/로')} 봤어요</span>` : '<span>AI는 이 문장의 유형을 분류하지 않았어요</span>';
       const kept = !!state.keepMine?.[id];
       cmp += ` <button type="button" class="small-btn keep ${kept ? 'on' : ''}" data-action="keep-mine" data-id="${id}" aria-pressed="${kept}">${kept ? '✓ 내 판단 유지함' : '내 판단 유지'}</button>`;
@@ -986,7 +996,7 @@ const ex40 = (t) => (t.length > 40 ? `${t.slice(0, 40)}…` : t);
 function missedByType(a) {
   const g = new Map();
   for (const id of a.missed) {
-    const t = typesOf(a.byId.get(id))[0];
+    const t = mainType(a.byId.get(id));
     if (!t) continue;
     const cur = g.get(t) || { type: t, count: 0, example: ex40(state.sentences.find((s) => s.id === id)?.text || '') };
     cur.count++;
@@ -1229,7 +1239,7 @@ function countUp(el, to, ms = 500) {
 function render(focus = true) {
   const views = { 1: viewStep1, 2: viewStep2, 3: viewStep3, 4: viewStep4, 5: viewStep5 };
   clearReveal();
-  $view.innerHTML = views[state.step]();
+  $view.innerHTML = practiceNote() + views[state.step]();
   document.querySelectorAll('#stepper li').forEach((li) => {
     const n = Number(li.dataset.step);
     li.classList.toggle('current', n === state.step);
@@ -1860,4 +1870,6 @@ if (state.candidatesPending) {
   state.candidatesPending = false;
 }
 if (DEMO) loadDemo().catch(() => {});
+// 새로고침 뒤에도 예시 표시(연습용 알림·샘플 버튼)가 보이게 예시를 미리 읽어 둔다
+Promise.all(EXAMPLES.map((ex) => loadExample(ex.key).catch(() => null))).then(() => { if (cachedExample(state.answer)) render(false); });
 render(false);
