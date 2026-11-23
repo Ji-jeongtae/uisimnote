@@ -817,3 +817,72 @@ mark.hl {
 /* 조교 패널 '내 형광펜'의 mark는 flex 항목(블록)이라 마커 그림이 통째로 늘어난다 → 예전 형광펜 그대로 */
 .pred-hl mark.hl { background: linear-gradient(transparent 38%, var(--highlight) 38%); border-radius: 2px; }
 .practice-note { color: var(--pen-red-text); } /* AA: #B42A33 on #FDECEE */
+
+/* =====================================================================
+   노트 콘셉트 2차 (2026-11-24) — 색·표현만
+   포인트 = 검정 잉크, 바탕 = 따뜻한 미색, 파랑·차가운 회색 없음
+   빨간펜(#E5484D)은 ●✓▲ · 놓침 메모 · 점수 동그라미에만
+   강조 글자 = 노란 형광펜 바탕(#FFE58A) + 검정 글자
+   ===================================================================== */
+:root {
+  --brand: #23221F;          /* 버튼·진행 탭·링크·강조 숫자 */
+  --brand-tint: #EEE8DA;
+  --brand-border: #CBC1AC;
+  --on-brand: #FFFFFF;
+  --surface: #FFFDF8;
+  --surface-tint: #EFEADF;
+  --ink: #1E1D1A;
+  --ink-strong: #2D2B27;
+  --ink-muted: #5C574F;
+  --ink-faint: #67625A;
+  --line: #48443D;
+  --line-soft: #DAD2C2;
+  --paper-sheet: #FCF8EF;    /* 카드도 미색 */
+  --rule-line: #E3D8C3;      /* 노트 줄 */
+  --em-hl: #FFE58A;          /* 강조 글자 바탕 */
+}
+button.primary:hover { background: #000; border-color: #000; }
+a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.panel.tint { background-color: var(--surface-tint); border-color: var(--surface-tint); }
+
+/* 포커스 = 검정 2px */
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.answer.selectable .sent:focus-visible,
+.verdicts input:focus-visible + span, .fix-modes input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* 강조 글자: 색 대신 형광펜 바탕 */
+.next-q .em-brand, .next-q .cond-list em, .hint-card .hint-hit, .missed-block .mb-head em,
+.missed-note .mn-grad, .sample-note, .info-form .form-title .small, .practice-note {
+  background: var(--em-hl); color: var(--ink); padding: 0 .3em; border-radius: 2px;
+}
+.sample-note, .missed-note .mn-grad { display: inline-block; }
+.practice-note { border-radius: 2px; }
+.hint-card .hint-no, .pred-mine, .cross-hint .ok { color: var(--ink); }
+
+/* 손글씨체는 짧은 빨간펜 메모에만 — 조교 패널 정보 줄은 본문 글꼴 */
+#side-detail > :first-child { font-family: var(--sans); font-size: 15px; line-height: 1.5; color: var(--ink-muted); }
+#side-detail > :first-child .muted { color: var(--ink-muted); }
+.missed-block.now > strong:first-child { font-family: 'Nanum Pen Script', var(--sans); font-size: 26px; font-weight: 400; line-height: 1.2; }
+.missed-block.now > strong:first-child .muted { font-family: var(--sans); font-size: 14px; color: var(--ink-muted); }
+.g-miss { font-family: 'Nanum Pen Script', var(--sans); font-size: 18px; font-weight: 400; vertical-align: -1px; }
+#side-detail { background: var(--paper-sheet); border-color: var(--brand-border); }
+
+/* 3단계 답변 = 줄 노트(미색 + 행간에 맞춘 연한 줄), 문장 글자는 선택되지 않게 */
+.panel:has(> #answer-compare) { background-color: var(--paper-sheet); }
+.answer.compare .srow {
+  background-image: linear-gradient(to bottom, transparent calc(1lh - 1px), var(--rule-line) calc(1lh - 1px));
+  background-size: 100% 1lh;
+}
+.answer.compare, .answer.compare .sent { -webkit-user-select: none; user-select: none; }
+
+/* 5단계 점수: 검정 숫자 + 손으로 그은 빨간 동그라미 */
+.side-metrics .stat.big { background: var(--surface-tint); }
+.side-metrics .stat.big .v {
+  display: inline-block; color: var(--ink); padding: .12em .45em .18em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 110' preserveAspectRatio='none'%3E%3Cpath d='M152 12C112 0 42 6 17 38 0 62 38 101 102 99c64-2 96-30 85-60-7-20-45-31-90-26' fill='none' stroke='%23E5484D' stroke-width='3.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.side-metrics .stat.big .v small { color: var(--ink); }
+.fix-modes input:checked + span { background: var(--brand-tint); border-color: var(--brand); color: var(--ink); } /* 빨강 대신 검정 잉크(AA) */
+/* 빨강은 빨간펜 자리에만: 나머지 '확인 필수·주의' 강조(--doubt)는 검정 잉크로 */
+:root { --doubt: #23221F; --doubt-tint: #EEE8DA; }
+.card .quote .sent.lv-must, .card .quote .sent.lv-should { background-image: none; } /* 4단계 인용도 기호로만 */

@@ -1,4 +1,4 @@
-import { splitSentences } from './lib/split.js';
+import { splitSentences, snapToWords } from './lib/split.js';
 import { buildReport, josa, linkOf, FIX_MODES, FIX_MODE_LABEL } from './lib/report.js';
 import { SITES, siteUrl, siteSearchUrl } from './lib/sites.js';
 import { checkShareUrl } from './lib/share.js';
@@ -1543,10 +1543,9 @@ function applySelection() {
     const text = state.sentences.find((x) => x.id === id)?.text || '';
     const start = sent.contains(range.startContainer) ? offsetIn(sent, range.startContainer, range.startOffset) : 0;
     const end = sent.contains(range.endContainer) ? offsetIn(sent, range.endContainer, range.endOffset) : text.length;
-    let a = Math.max(0, Math.min(start, end)), b = Math.min(text.length, Math.max(start, end));
-    while (a < b && /\s/.test(text[a])) a++;
-    while (b > a && /\s/.test(text[b - 1])) b--;
-    if (b <= a) continue;
+    const span = snapToWords(text, start, end); // 단어 중간에서 끊기지 않게 어절 경계로
+    if (!span) continue;
+    const { start: a, end: b } = span;
     setMarks(id, [...marksOf(id), { start: a, end: b }]);
     autoAdded.push(...autoPickReasons(id, text.slice(a, b)));
     changed = true;

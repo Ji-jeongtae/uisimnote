@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { splitSentences } from '../lib/split.js';
+import { splitSentences, snapToWords } from '../lib/split.js';
 import { normalize, validateInput } from '../lib/prompt.js';
 
 const demo = JSON.parse(fs.readFileSync(new URL('../demo.json', import.meta.url), 'utf8'));
@@ -55,6 +55,16 @@ assert.equal(josa('가이드', '으로/로'), '로');
 assert.equal(josa('원문', '과/와'), '과');
 assert.equal(josa('보고서', '과/와'), '와');
 const meta = { tool: 'ChatGPT (무료)', toolVersion: 'GPT-6', date: '2026-11-19', purpose: '아이디어 단계', question: 'Q', shareUrl: '' };
+// 형광펜 범위: 어절 경계로 넓힘
+{
+  const t = 'Kasneci 외(2023)는 Nature Education에 발표한';
+  const pick = (a, b) => { const r = snapToWords(t, a, b); return r && t.slice(r.start, r.end); };
+  assert.equal(pick(t.indexOf('ture'), t.indexOf('ture') + 2), 'Nature');
+  assert.equal(pick(t.indexOf('Nat') + 1, t.indexOf('발표') + 1), 'Nature Education에 발표한');
+  assert.equal(pick(t.indexOf(' Nature'), t.indexOf(' Nature') + 7), 'Nature'); // 앞 공백은 빼고
+  assert.equal(pick(0, t.length), t);
+  assert.equal(snapToWords(t, 7, 8), null); // 공백만
+}
 const r1 = buildReport({ meta, answer: 'AI 답변 원문', conclusion: '결론', compared: '', ratio: 50, items: [
   { no: 3, text: '2023년 Nature에 실린 Walters와 Wilder의 연구는 ChatGPT가 만든 학술 인용 636건을 검증했습니다.', verdict: 'problem', problem: 'Nature', cross: 'Walters & Wilder(2023) 원문', fix: 'Scientific Reports', location: '2장' },
   { no: 5, text: '짧은 문장', verdict: 'ok' }, { no: 6, text: 'x', verdict: 'unused' }, { no: 8, text: 'y' },
