@@ -702,3 +702,8 @@ button.kw.kw-copy span { font-size: 13px; color: var(--ink-muted); }
 .side-metrics .stat.big .v, .side-metrics .stat.big .v span { font-size: 88px; line-height: 1.05; }
 .side-metrics .stat.big .v small { font-size: 32px; }
 .side-metrics .stat.big .k { font-size: 15px; }
+/* 5단계: 넓은 화면에서 왼쪽 = 점수·다음 질문, 오른쪽 = 증빙서 (DOM 순서는 그대로라 좁은 화면·인쇄는 증빙서가 먼저) */
+@media (min-width: 1200px) {
+  .split.swap { grid-template-columns: 2fr 3fr; }
+  .split.swap .col-side { order: -1; }
+}

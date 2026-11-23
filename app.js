@@ -472,9 +472,9 @@ function reasonChips(id, locked) {
 
 /* ---------- 단계별 화면 ---------- */
 /* 넓은 화면(1200px 이상)에서 왼쪽 = 주 작업, 오른쪽 = 입력·요약·버튼(따라오는 열). 좁으면 위아래로 쌓인다. */
-const splitView = (head, main, side) => `
+const splitView = (head, main, side, cls = '') => `
   <div class="step-head">${head}</div>
-  <div class="split">
+  <div class="split${cls ? ` ${cls}` : ''}">
     <div class="col-main">${main}</div>
     <aside class="col-side" aria-label="이 단계의 입력과 버튼">${side}</aside>
   </div>`;
@@ -904,7 +904,7 @@ function applySampleVerify(a) {
   if (!sample) return false;
   for (const id of a.targets) if (sample[id]) state.verify[id] = { ...sample[id] };
   const concl = cachedExample(state.answer)?.sampleConclusion;
-  if (concl && !state.conclusion.trim()) state.conclusion = concl; // 증빙서 4번 [최종 결론] 샘플
+  if (concl && (!state.conclusion.trim() || state.conclusion === state.conclusionAuto)) { state.conclusion = concl; state.conclusionAuto = ''; } // 증빙서 4번 [최종 결론] 샘플
   state.sampleApplied = true;
   // '문제 있음' 문장을 열어 채워진 칸을 바로 보여 준다
   active4 = a.targets.find((id) => sample[id]?.verdict === 'problem') ?? active4;
@@ -1078,9 +1078,26 @@ function recordHistory(a, vs) {
   return hist;
 }
 
+// 모두 '확인함'(또는 '안 씀')이고 문제가 없으면 최종 결론을 자동으로 채운다.
+// 비어 있거나 전에 자동으로 넣은 그대로일 때만 바꾼다(학생이 고친 결론은 건드리지 않음).
+function autoConclusionText(a, vs) {
+  if (!a.targets.length || vs.problem || !vs.ok || vs.ok + vs.unused !== a.targets.length) return '';
+  const src = (state.compared || '').trim();
+  return `확인이 필요한 주장 ${vs.ok}개를 ${src ? `${src}${josa(src, '과/와')} ` : '출처 자료와 '}대조해 모두 확인했고 실제와 다른 부분을 찾지 못했다${vs.unused ? `(쓰지 않기로 한 ${vs.unused}개 제외)` : ''}. 확인한 내용은 출처와 함께 인용해 활용 목적 범위 안에서 참고 자료로 쓴다.`;
+}
+function applyAutoConclusion(a, vs) {
+  const cur = (state.conclusion || '').trim();
+  if (cur && cur !== state.conclusionAuto) return;
+  const t = autoConclusionText(a, vs);
+  state.conclusion = t;
+  state.conclusionAuto = t;
+  save();
+}
+
 function viewStep5() {
   const a = analysis();
   const vs = verifyStats(a);
+  applyAutoConclusion(a, vs);
   const hist = recordHistory(a, vs) || store.get(HISTORY_KEY, []);
   const picked = state.doubtLog?.ids.length ?? state.selected.length;
   const head = '<h2>5. 증빙서 미리보기</h2>';
@@ -1104,7 +1121,7 @@ function viewStep5() {
       <label class="field" style="margin:0"><span>메모</span>
         <textarea data-bind="memo" maxlength="1000" rows="8" placeholder="예: 55%·18%는 모델별 수치라 함께 써야 함 / 2장에는 원문 표 인용">${esc(state.memo || '')}</textarea></label>
     </div>
-    <label class="field" style="margin:1rem 0 0"><span>최종 결론 <em>검증 결과를 반영해 내 말로 쓰세요 · 증빙서 4번 '단계별 비판적 검증 요약'의 [최종 결론]에 들어가요</em></span>
+    <label class="field" style="margin:1rem 0 0"><span>최종 결론 <em>${state.conclusionAuto && state.conclusion === state.conclusionAuto ? '모두 확인했고 문제가 없어 자동으로 채웠어요, 내 말로 고쳐 써도 돼요' : '검증 결과를 반영해 내 말로 쓰세요'} · 증빙서 4번 '단계별 비판적 검증 요약'의 [최종 결론]에 들어가요</em></span>
       <textarea data-bind="conclusion" rows="3">${esc(state.conclusion)}</textarea></label>
   </div>
 
@@ -1126,7 +1143,7 @@ function viewStep5() {
     <button class="small-btn" data-action="export">JSON 내보내기</button>
     <button class="small-btn" data-action="new">새로 시작</button>
   </div>`;
-  return splitView(head, main, side);
+  return splitView(head, main, side, 'swap'); // 넓은 화면: 왼쪽 = 점수·다음 질문, 오른쪽 = 증빙서(2026-11-24 정태)
 }
 
 // 이번 회차에 놓친 유형 + '문제 있음' 유형 → 제안할 조건 키
@@ -1667,7 +1684,7 @@ function prepareSession() {
     state.sentences = splitSentences(text);
     state.sourceAnswer = text;
     state.selected = []; state.ai = null; state.verify = {}; state.doubtLog = null;
-    state.summary = ''; state.memo = ''; state.conclusion = ''; state.compared = '';
+    state.summary = ''; state.memo = ''; state.conclusion = ''; state.conclusionAuto = ''; state.compared = '';
     state.reasons = {}; state.reasonNotes = {}; state.marks = {}; state.autoReasons = {}; state.sampleApplied = false;
     state.nextQ = null; state.keepMine = {};
     state.sessionId = `s${Date.now().toString(36)}`;
