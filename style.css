@@ -814,3 +814,6 @@ mark.hl {
 #side-detail > :first-child { font-family: 'Nanum Pen Script', var(--sans); font-size: 26px; line-height: 1.2; color: var(--ink); }
 #side-detail > :first-child .muted { color: var(--ink-strong); }
 #answer-select .reason-chips { background-color: var(--paper-sheet); } /* 칩 줄에는 노트 줄을 긋지 않는다 */
+/* 조교 패널 '내 형광펜'의 mark는 flex 항목(블록)이라 마커 그림이 통째로 늘어난다 → 예전 형광펜 그대로 */
+.pred-hl mark.hl { background: linear-gradient(transparent 38%, var(--highlight) 38%); border-radius: 2px; }
+.practice-note { color: var(--pen-red-text); } /* AA: #B42A33 on #FDECEE */

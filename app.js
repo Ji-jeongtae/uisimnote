@@ -437,7 +437,7 @@ function renderAnswer(mode) {
       if (mode === 'select') {
         const locked = !!state.ai;
         const span = `${br}${pre}<span class="sent${sel.has(s.id) ? ' has-mark' : ''}" tabindex="${locked ? -1 : 0}" data-id="${s.id}" ${locked ? 'aria-disabled="true"' : 'aria-label="문장. 드래그해서 형광펜을 긋거나 Enter로 문장 전체에 긋기"'}>${markedText(s, !locked)}</span> `;
-        // 비교 후 2단계: 놓친 문장 아래에 '○ 놓침 · 유형' (3단계와 같은 기호)
+        // 비교 후 2단계: 놓친 문장 아래에 '✓ 놓침 · 유형'(확인 권장이면 ▲, 3단계와 같은 기호)
         const missedTag = locked && a?.missed.includes(s.id) ? `<span class="missed-tag"><i class="g mk">${markOf(a.byId.get(s.id)?.level, false).sym}</i> 놓침 · ${esc(mainType(a.byId.get(s.id)) || '')}</span>` : '';
         return span + (sel.has(s.id) ? reasonChips(s.id, locked) : '') + missedTag;
       }
@@ -611,7 +611,7 @@ function currentMissedBlock(a) {
   const prev = pendingOf(prevEntry(store.get(HISTORY_KEY, [])));
   if (!missed.length) return `<div class="missed-block now"><strong>이번에 내가 놓친 것</strong><p class="mb-none">놓친 문장이 없어요. 확인이 필요한 ${a.flagged.length}개를 모두 먼저 찾았어요.</p></div>`;
   return `<div class="missed-block now">
-    <strong>이번에 내가 놓친 것 <span class="muted small">AI 표시와 비교한 결과 · 아래 문장에 ○ 표시</span></strong>
+    <strong>이번에 내가 놓친 것 <span class="muted small">AI 표시와 비교한 결과 · 아래 문장에 ✓·▲ 표시</span></strong>
     <ul>${missed.map((m) => `
       <li><div class="mb-head"><b>${esc(m.type)}</b> · ${m.count}개 놓침${prev.some((p) => p.type === m.type) ? ' <em>지난번에도 놓침</em>' : ''}</div>
         ${m.example ? `<div class="mb-ex">"${esc(m.example)}"</div>` : ''}
