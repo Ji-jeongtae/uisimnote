@@ -438,20 +438,14 @@ function renderAnswer(mode) {
         const locked = !!state.ai;
         const span = `${br}${pre}<span class="sent${sel.has(s.id) ? ' has-mark' : ''}" tabindex="${locked ? -1 : 0}" data-id="${s.id}" ${locked ? 'aria-disabled="true"' : 'aria-label="문장. 드래그해서 형광펜을 긋거나 Enter로 문장 전체에 긋기"'}>${markedText(s, !locked)}</span> `;
         // 비교 후 2단계: 놓친 문장 아래에 '○ 놓침 · 유형' (3단계와 같은 기호)
-        const missedTag = locked && a?.missed.includes(s.id) ? `<span class="missed-tag"><i class="g missed">○</i> 놓침 · ${esc(mainType(a.byId.get(s.id)) || '')}</span>` : '';
+        const missedTag = locked && a?.missed.includes(s.id) ? `<span class="missed-tag"><i class="g mk">${markOf(a.byId.get(s.id)?.level, false).sym}</i> 놓침 · ${esc(mainType(a.byId.get(s.id)) || '')}</span>` : '';
         return span + (sel.has(s.id) ? reasonChips(s.id, locked) : '') + missedTag;
       }
       const it = a.byId.get(s.id);
       const lv = it?.level || 'info';
       const flagged = lv === 'must' || lv === 'should';
       const mine = sel.has(s.id);
-      let g = '', gl = '';
-      if (mine && flagged) {
-        const same = reasonMatches(s.id, it);
-        g = `<i class="g first">●</i>${same ? '<i class="g same">✓</i>' : ''}`;
-        gl = same ? '먼저 찾음, 이유도 같음' : '먼저 찾음';
-      } else if (!mine && flagged) { g = '<i class="g missed">○</i>'; gl = '놓침'; }
-      else if (mine) { g = '<i class="g mine">◐</i>'; gl = '나만 의심'; }
+      const { g, label: gl } = markOf(lv, mine);
       return `<div class="srow"><span class="gut"${gl ? ` title="${gl}"` : ''}>${g}</span><span class="stext">${pre}<span class="sent lv-${lv}${s.id === activeId ? ' open' : ''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${gl ? `${gl}. ` : ''}눌러서 상세 보기">${markedText(s, false)}</span></span></div>`;
     }).join('');
     return mode === 'select' ? `${ctx}<p${hasCandidates() ? ' class="cand"' : ''}>${html}</p>` : `<div class="para${hasCandidates() ? ' cand' : ''}">${ctx}${html}</div>`;
@@ -479,13 +473,20 @@ const splitView = (head, main, side, cls = '') => `
     <aside class="col-side" aria-label="이 단계의 입력과 버튼">${side}</aside>
   </div>`;
 
+// 비교 표시 기호(2026-11-24 정태: 표시를 줄임). 번호 옆에 하나만, 빨간색(#E5484D) 하나만.
+//  확인 필수 + 먼저 찾음 = ● / 확인 필수 + 놓침 = ✓ + 작은 '놓침' / 확인 권장 = ▲ / 나만 의심·참고 = 표시 없음
+//  '이유도 같음'은 기호 없이, 문장을 누르면 AI 조교의 한마디에 한 줄로만.
+function markOf(level, mine) {
+  if (level === 'must') return mine
+    ? { sym: '●', g: '<i class="g mk" aria-hidden="true">●</i>', label: '확인 필수, 먼저 찾음' }
+    : { sym: '✓', g: '<i class="g mk" aria-hidden="true">✓</i><small class="g-miss">놓침</small>', label: '확인 필수, 놓침' };
+  if (level === 'should') return { sym: '▲', g: '<i class="g mk" aria-hidden="true">▲</i>', label: mine ? '확인 권장, 먼저 찾음' : '확인 권장, 놓침' };
+  return { sym: '', g: '', label: '' };
+}
 const LEGEND_HTML = `<ul class="legend">
-      <li><span class="sw must"></span>확인 필수</li>
-      <li><span class="sw should"></span>확인 권장</li>
-      <li class="sep"><i class="g first">●</i>먼저 찾음</li>
-      <li><i class="g missed">○</i>놓침</li>
-      <li><i class="g mine">◐</i>나만 의심</li>
-      <li><i class="g first">●</i><i class="g same">✓</i>이유도 같음</li>
+      <li><i class="g mk">●</i>먼저 찾음</li>
+      <li><i class="g mk">✓</i>놓침</li>
+      <li><i class="g mk">▲</i>확인 권장</li>
     </ul>`;
 
 function viewStep1() {
@@ -668,12 +669,12 @@ function viewStep2() {
 let activeId = null;
 function claimDetail(id, a) {
   const s = state.sentences.find((x) => x.id === id);
-  if (!s) return '<p class="muted small" style="margin:0">왼쪽 답변에서 문장을 누르면 AI 조교의 한마디와 검색어가 여기에 나와요.</p>';
+  if (!s) return '<p class="muted small" style="margin:0">답변에서 문장을 누르면 AI 조교의 한마디와 검색어가 여기에 나와요.</p>';
   const it = a.byId.get(id) || { level: 'info', types: [], reason: '', media: [], keywords: [] };
   const lv = LEVEL[it.level];
   const n = a.number.get(id);
   return `
-    <p class="ai-level"><span class="muted">${n ?? '·'}번</span> AI 표시 <b class="lv-text ${lv.cls}">${lv.label}</b>${typesOf(it).length ? ` · ${esc(typesOf(it).join(', '))}` : ''}</p>
+    <p class="ai-level"><span class="muted">${n ?? '·'}번</span> AI 표시 <b class="lv-text">${lv.label}</b>${typesOf(it).length ? ` · ${esc(typesOf(it).join(', '))}` : ''}</p>
     ${it.origLevel ? `<p class="small muted trim-note">AI는 '${LEVEL[it.origLevel].label}'로 봤지만, 이번에는 더 중요한 ${MAX_TARGETS}개만 확인해요. 보고서에 쓸 문장이면 직접 확인하세요.</p>` : ''}
     ${predictionBlock(id, it, a)}
     ${tipBlock(id, it)}
@@ -686,7 +687,7 @@ function predictionBlock(id, it, a) {
   const types = typesOf(it);
   let cmp = '';
   if (manualTypesOf(id).length) { // 자동으로 켜진 칩만 있으면 비교하지 않는다(지표와 같은 기준)
-    if (reasonMatches(id, it)) cmp = '<span class="pred-same">AI 분류와 같음</span>';
+    if (reasonMatches(id, it)) cmp = ''; // 같으면 AI 조교의 한마디에 한 줄로만 말한다(tipBlock)
     else {
       const t = mainType(it);
       cmp = t ? `<span>AI는 '${esc(t)}'${josa(t, '으로/로')} 봤어요</span>` : '<span>AI는 이 문장의 유형을 분류하지 않았어요</span>';
@@ -704,7 +705,8 @@ function tipBlock(id, it) {
   if (state.keepMine?.[id]) for (const t of reasonTypesOf(id)) if (!types.includes(t)) types.push(t);
   const tips = [...new Set(types.map((t) => TIP[t]).filter(Boolean))].slice(0, 3);
   if (!tips.length) return '';
-  return `<div class="tip"><b>AI 조교의 한마디</b>${tips.map((t) => `<p>${esc(t)}</p>`).join('')}</div>`;
+  const same = state.ai && state.selected.includes(id) && manualTypesOf(id).length && reasonMatches(id, it);
+  return `<div class="tip"><b>AI 조교의 한마디</b>${same ? '<p class="tip-same">고른 이유도 AI와 같아요</p>' : ''}${tips.map((t) => `<p>${esc(t)}</p>`).join('')}</div>`;
 }
 
 let pendingReveal = false;
@@ -737,7 +739,7 @@ function viewStep3() {
     ${LEGEND_HTML}
     <hr class="rule">
     <div class="answer compare" id="answer-compare">${renderAnswer('compare')}</div>
-    <p class="small muted" style="margin:0">문장을 누르면 오른쪽에 AI 조교의 한마디와 검색어가 나와요. · 분류: ${esc(state.ai.model)} · 프롬프트 ${esc(state.ai.promptVersion)}</p>
+    <p class="small muted" style="margin:0">문장을 누르면 AI 조교 패널에 한마디와 검색어가 나와요. · 분류: ${esc(state.ai.model)} · 프롬프트 ${esc(state.ai.promptVersion)}</p>
   </div>`;
   const side = `
   <div class="side-nav">
@@ -755,12 +757,12 @@ function viewStep3() {
   </div>
   <div id="cmp-groups">
     ${a.missed.length ? `<div class="panel side-list">
-      <h4><i class="g missed">○</i> 놓친 주장 ${a.missed.length}개 <span class="muted small">왜 놓쳤는지 생각해 보세요</span></h4>
+      <h4><i class="g mk">✓</i> 놓친 주장 ${a.missed.length}개 <span class="muted small">왜 놓쳤는지 생각해 보세요</span></h4>
       <div class="pick-row">${a.missed.map((id) => `<button type="button" class="pick ${id === activeId ? 'on' : ''}" data-pick="${id}" title="${esc(state.sentences.find((s) => s.id === id)?.text)}"><b>${a.number.get(id)}</b> ${esc(typesOf(a.byId.get(id)).join(' · '))}</button>`).join('')}</div>
     </div>` : '<div class="panel tint small">놓친 주장이 없어요.</div>'}
     <div class="panel side-detail" id="side-detail">${claimDetail(activeId, a)}</div>
   </div>`;
-  return splitView(head, main, side);
+  return splitView(head, main, side, 'swap'); // 넓은 화면: 왼쪽 = AI 조교 패널, 오른쪽 = 문장 목록(2026-11-24 정태)
 }
 
 /* 3단계 공개 장면: 밑줄 → 배지 도장 → 요약 카운트업 (전체 2초 이내, 한 번에 한 영역) */
@@ -929,7 +931,8 @@ function viewStep4() {
     const v = state.verify[id] || {};
     const lv = LEVEL[it.level];
     const flagged = a.flagged.includes(id);
-    const g = a.sel.has(id) ? (flagged ? '<i class="g first" title="먼저 찾음">●</i>' : '<i class="g mine" title="나만 의심">◐</i>') : '<i class="g missed" title="놓침">○</i>';
+    const mk = markOf(it.level, a.sel.has(id));
+    const g = mk.g ? `<span title="${mk.label}">${mk.g}</span>` : '<i class="g"></i>';
     const unused = v.verdict === 'unused';
     const STATUS = { ok: '✓ 확인함', problem: '문제 있음', unused: '안 씀' };
     const status = `<span class="status s-${v.verdict || 'none'}">${v.verdict ? STATUS[v.verdict] : '아직'}</span>`;
