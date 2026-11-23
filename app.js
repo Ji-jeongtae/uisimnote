@@ -1,5 +1,5 @@
 import { splitSentences } from './lib/split.js';
-import { buildReport, josa, linkOf } from './lib/report.js';
+import { buildReport, josa, linkOf, FIX_MODES, FIX_MODE_LABEL } from './lib/report.js';
 import { SITES, siteUrl, siteSearchUrl } from './lib/sites.js';
 import { checkShareUrl } from './lib/share.js';
 import { pickCandidates, contextOf, MAX_CANDIDATES } from './lib/candidates.js';
@@ -837,13 +837,17 @@ function openCard(id) {
 
 /* ---------- 4단계: 문제 찾고 고치기 ---------- */
 const PROBLEM_FIELDS = ['problem', 'cross', 'fix'];
+const fixModeOf = (v) => (FIX_MODES.includes(v?.fixMode) ? v.fixMode : 'fix');
+// 삭제는 정정 칸이 필요 없다
+const requiredFields = (v) => (fixModeOf(v) === 'delete' ? ['problem', 'cross'] : PROBLEM_FIELDS);
+const fixText = (v) => (fixModeOf(v) === 'delete' ? '삭제' : (v?.fix || '').trim());
 
 // [문제 발견] 값이 원문에 그대로 있으면 교정 부호(빨간 취소선 + 위에 정정 값)를 붙인다.
 function markedQuote(text, v) {
   const part = (v?.problem || '').trim();
   if (v?.verdict !== 'problem' || !part || !text.includes(part)) return esc(text);
   const i = text.indexOf(part);
-  return `${esc(text.slice(0, i))}<ruby class="fix-mark"><del>${esc(part)}</del><rt>${esc((v.fix || '').trim())}</rt></ruby>${esc(text.slice(i + part.length))}`;
+  return `${esc(text.slice(0, i))}<ruby class="fix-mark"><del>${esc(part)}</del><rt>${esc(fixText(v))}</rt></ruby>${esc(text.slice(i + part.length))}`;
 }
 
 // 4단계: 왼쪽 = 문장 카드, 오른쪽 = 고른 카드의 입력칸
@@ -861,11 +865,14 @@ function verifyInputs(id, a, vs) {
     </div>
     ${isProblem ? `
     <div class="problem-fields">
+      <div class="fix-modes" role="radiogroup" aria-label="정정 방식"><span class="chip-label">정정 방식</span>
+        ${FIX_MODES.map((k) => `<label><input type="radio" name="m-${id}" value="${k}" data-verify="${id}" data-field="fixMode" ${fixModeOf(v) === k ? 'checked' : ''}><span>${FIX_MODE_LABEL[k]}</span></label>`).join('')}
+      </div>
       <div class="grid-2">
         <label class="field"><span>문제 발견 <em>필수</em></span>
           <input type="text" data-verify="${id}" data-field="problem" value="${esc(v.problem)}" maxlength="120" placeholder="실제와 다른 표현 (원문 그대로)"></label>
-        <label class="field"><span>정정 <em>필수</em></span>
-          <input type="text" data-verify="${id}" data-field="fix" value="${esc(v.fix)}" maxlength="200" placeholder="고친 표현"></label>
+        ${fixModeOf(v) === 'delete' ? '<p class="small muted fix-del-note">삭제: 이 내용을 보고서에서 빼요. 정정 칸은 쓰지 않아도 돼요.</p>' : `<label class="field"><span>${fixModeOf(v) === 'soften' ? '완화한 표현' : '정정'} <em>필수</em></span>
+          <input type="text" data-verify="${id}" data-field="fix" value="${esc(v.fix)}" maxlength="200" placeholder="${fixModeOf(v) === 'soften' ? '예: ~라는 우려가 있다' : '고친 표현'}"></label>`}
       </div>
       <label class="field"><span>교차 검증 <em>필수 · 자료 이름과 함께 URL 또는 DOI를 넣어 주세요</em></span>
         <input type="text" data-verify="${id}" data-field="cross" value="${esc(v.cross)}" maxlength="300" placeholder="예: CJ ENM 2025 실적 발표 https://… / Walters(2023) 10.1038/s41598-023-41032-5">
@@ -1203,7 +1210,7 @@ function rememberList(a) {
   const html = [
     sec('고쳐서 반영할 것', fixed.map(({ id, v }) => {
       const link = linkOf(v.cross);
-      return `<li><span class="muted small">원문 ${id}번째 문장</span><div><del>${esc(v.problem || '(문제 발견 미작성)')}</del> → <b>${esc(v.fix || '(정정 미작성)')}</b>${v.location ? ` <span class="muted small">· ${esc(v.location)}</span>` : ''}</div>${link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer" class="small">대조 자료 ↗</a>` : '<span class="small muted">대조 자료 링크 없음</span>'}</li>`;
+      return `<li><span class="muted small">원문 ${id}번째 문장</span><div><del>${esc(v.problem || '(문제 발견 미작성)')}</del> → <b>${esc(fixText(v) || '(정정 미작성)')}</b>${fixModeOf(v) === 'soften' ? ' <span class="muted small">(표현 완화)</span>' : ''}${v.location ? ` <span class="muted small">· ${esc(v.location)}</span>` : ''}</div>${link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer" class="small">대조 자료 ↗</a>` : '<span class="small muted">대조 자료 링크 없음</span>'}</li>`;
     })),
     sec('쓰지 않기로 한 문장', unused.map((id) => `<li><span class="muted small">원문 ${id}번째 문장</span><div>${esc(short(text(id)))}</div></li>`)),
     sec('아직 확인하지 않은 문장', unseen.map((id) => `<li><span class="muted small">원문 ${id}번째 문장</span><div>${esc(short(text(id)))}</div></li>`)),
@@ -1383,7 +1390,7 @@ const actions = {
     for (const id of a.targets) {
       const v = state.verify[id] || {};
       if (v.verdict !== 'problem') continue;
-      const empty = PROBLEM_FIELDS.find((f) => !(v[f] || '').trim());
+      const empty = requiredFields(v).find((f) => !(v[f] || '').trim());
       if (empty) {
         toast('문제 있음으로 고른 문장의 필수 칸(문제 발견·교차 검증·정정)을 채워 주세요.');
         if (active4 !== id) pick4(id);
@@ -1817,7 +1824,7 @@ $view.addEventListener('change', (e) => {
       const y = window.scrollY;
       render(false);
       window.scrollTo(0, y);
-      document.querySelector(`input[name="v-${id}"][value="${el.value}"]`)?.focus({ preventScroll: true });
+      document.querySelector(`input[name="${el.name}"][value="${el.value}"]`)?.focus({ preventScroll: true });
     }
   }
 });

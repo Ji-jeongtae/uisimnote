@@ -106,13 +106,14 @@
       "verdict": "problem",
       "problem": "Nature Education",
       "cross": "Kasneci 외(2023), Learning and Individual Differences 103, 102274 https://doi.org/10.1016/j.lindif.2023.102274",
-      "fix": "Learning and Individual Differences"
+      "fix": "Learning and Individual Differences",
+      "fixMode": "fix"
     },
     "3": {
       "verdict": "problem",
+      "fixMode": "delete",
       "problem": "김민지와 박서준(2024)의 연구",
-      "cross": "RISS·Google Scholar·KCI에서 저자·제목 검색 결과 없음",
-      "fix": "해당 연구 인용 삭제"
+      "cross": "RISS·Google Scholar·KCI https://www.riss.kr/search/Search.do?isDetailSearch=N&searchGubun=true&query=김민지+박서준+AI+글쓰기"
     },
     "4": {
       "verdict": "ok",
@@ -121,9 +122,10 @@
     },
     "5": {
       "verdict": "problem",
+      "fixMode": "soften",
       "problem": "AI가 생각하는 과정을 대신하기 때문입니다",
-      "cross": "근거 연구의 표본·설계 확인 불가",
-      "fix": "인과 단정을 '~라는 우려가 있다'로 완화"
+      "cross": "RISS·Google Scholar https://www.riss.kr/search/Search.do?isDetailSearch=N&searchGubun=true&query=생성형+AI+글쓰기+능력+영향",
+      "fix": "AI 사용이 글쓰기 실력에 영향을 줄 수 있다는 우려가 있다"
     }
   },
   "sampleVerifyNote": "연습용 답변에 심은 오류 3개(①②③) 기준 4단계 샘플. Bašić 외(2023)는 실제 논문(Humanities and Social Sciences Communications, 2023)이라 확인함.",
