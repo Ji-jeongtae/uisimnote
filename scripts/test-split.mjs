@@ -42,7 +42,7 @@ assert.equal(validateInput({ sentences: [{ id: 1, text: 'x' }] }), null);
 console.log('ok — split/normalize/validate 테스트 통과');
 
 // ---- 증빙서 조립 ----
-import { buildReport, josa, linkOf } from '../lib/report.js';
+import { buildReport, josa, linkOf, head30 } from '../lib/report.js';
 assert.equal(josa('학술지', '을/를'), '를');
 assert.equal(josa('원문', '을/를'), '을');
 assert.equal(josa('Scientific Reports', '을/를'), '를'); // s=에스, 받침 없음
@@ -62,7 +62,7 @@ const r1 = buildReport({ meta, answer: 'AI 답변 원문', conclusion: '결론',
 assert.equal(r1[0].body, 'ChatGPT (무료) GPT-6(2026.11.19 사용)');
 const v1 = r1[3].body;
 assert.ok(v1.includes('확인이 필요한 주장 4개 중 확인함 1 · 문제 발견 1 · 사용 안 함 1 · 미확인 1, AI 표시 전 먼저 의심한 비율 50%'));
-assert.ok(v1.includes('① AI 답변 중 "2023년 Nature에 실린 Walters와 Wild…"에서 Nature 부분이 실제와 다르게 답변됨'), v1);
+assert.ok(v1.includes('① AI 답변 중 "2023년 Nature에 실린 Walters와…"에서 Nature 부분이 실제와 다르게 답변됨'), v1); // 띄어쓰기 단위로 자름
 assert.ok(v1.includes('① [원문 3번째 문장] Walters & Wilder(2023) 원문을 직접 찾아 교차 검증한 후, Scientific Reports로 정정함, 2장에 반영'), v1);
 assert.ok(v1.includes('   대조 자료 링크: (URL 또는 DOI 작성 필요)'), v1); // 링크가 없으면 빠지지 않고 '작성 필요'로 드러난다
 // 링크가 있으면: 자료 이름에서 링크를 떼고, 링크는 다음 줄에. DOI는 doi.org 주소로.
@@ -84,6 +84,20 @@ const r4 = buildReport({ meta, answer: 'a', conclusion: 'c', compared: '', ratio
   { no: 6, text: 't', verdict: 'problem', fixMode: '이상한 값', problem: 'p', cross: '원문', fix: '정답' },
 ] });
 const v4 = r4[3].body;
+// [AI 답변의 문제점 발견]도 정정 방식에 맞춘다
+assert.ok(v4.includes('① AI 답변 중 "t"에서 Nature Education 부분이 실제와 다르게 답변됨'), v4);
+assert.ok(v4.includes('② AI 답변 중 "t"에서 김민지와 박서준(2024)의 연구 부분의 출처를 확인할 수 없음'), v4);
+assert.ok(v4.includes('③ AI 답변 중 "t"에서 대신하기 때문입니다 부분이 근거 없이 단정됨'), v4);
+assert.ok(v4.includes('④ AI 답변 중 "t"에서 p 부분이 실제와 다르게 답변됨'), v4);
+// 인용 발췌: 30자 안, 띄어쓰기 단위
+assert.equal(head30('짧은 문장'), '짧은 문장');
+assert.equal(head30('김민지와 박서준(2024)의 연구는 국내 대학생 312명을 대상으로 AI 사용 집단의'), '김민지와 박서준(2024)의 연구는 국내 대학생…');
+assert.equal(head30('종합하면, AI를 쓰면 글쓰기 실력이 떨어지는 것은 AI가 생각하는 과정을'), '종합하면, AI를 쓰면 글쓰기 실력이 떨어지는 것은…');
+assert.equal(head30('가'.repeat(40)), `${'가'.repeat(30)}…`); // 띄어쓰기가 없으면 글자로
+for (const t of ['스튜디오드래곤은 2016년 CJ ENM의 드라마 사업부문을 물적분할해 설립됐어.', '2023년 Nature에 실린 Walters와 Wilder의 연구는 ChatGPT가']) {
+  const h = head30(t).replace(/…$/, '');
+  assert.ok(h.length <= 30 && t.startsWith(h) && /\s/.test(t[h.length]), h); // 단어 중간에서 끊기지 않음
+}
 assert.ok(v4.includes('① [원문 2번째 문장] Kasneci 외(2023)를 직접 찾아 교차 검증한 후, Learning and Individual Differences로 정정함\n'), v4);
 assert.ok(v4.includes('② [원문 3번째 문장] RISS·Google Scholar·KCI에서 직접 찾아보았으나 확인되지 않아 해당 내용을 삭제함\n   대조 자료 링크: https://www.riss.kr/search/Search.do?query=김민지+박서준'), v4);
 assert.ok(v4.includes("③ [원문 5번째 문장] RISS·Google Scholar에서 근거를 확인할 수 없어 'AI 사용이 글쓰기 실력에 영향을 줄 수 있다는 우려가 있다'로 표현을 완화함, 결론에 반영"), v4);
@@ -94,7 +108,8 @@ assert.ok(!v4.includes('정정 내용 작성 필요'), v4); // 삭제는 정정 
   const fs = await import('node:fs');
   const pa = JSON.parse(fs.readFileSync(new URL('../examples/participant-a.json', import.meta.url), 'utf8'));
   const body = buildReport({ meta: pa.meta, answer: pa.answer, conclusion: pa.sampleConclusion, compared: '', ratio: 0,
-    items: pa.candidates.map((no) => ({ no, text: 'x', ...pa.sampleVerify[no] })) })[3].body;
+    items: pa.candidates.map((no) => ({ no, text: splitSentences(pa.answer).find((x) => x.id === no).text, ...pa.sampleVerify[no] })) })[3].body;
+  assert.ok(body.includes('① AI 답변 중 "스튜디오드래곤은 2016년 CJ ENM의 드라마…"에서 CJ ENM 부분이 실제와 다르게 답변됨'), body);
   assert.ok(body.includes('① [원문 92번째 문장] KIND 스튜디오드래곤 설립 관련 공시를 직접 찾아 교차 검증한 후, CJ E&M(2018년 합병 후 CJ ENM)으로 정정함, 슬라이드 3 스튜디오드래곤 설명에 반영\n   대조 자료 링크: https://kind.krx.co.kr/external/2023/05/15/002042/20230515004407/11013.htm'), body);
 }
 const r2 = buildReport({ meta, answer: '', conclusion: '', compared: 'KOSIS 통계', ratio: 0, items: [{ text: 'a', verdict: 'ok' }] });
