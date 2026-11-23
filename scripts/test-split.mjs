@@ -60,6 +60,9 @@ const r1 = buildReport({ meta, answer: 'AI 답변 원문', conclusion: '결론',
   { no: 5, text: '짧은 문장', verdict: 'ok' }, { no: 6, text: 'x', verdict: 'unused' }, { no: 8, text: 'y' },
 ] });
 assert.equal(r1[0].body, 'ChatGPT (무료) GPT-6(2026.11.19 사용)');
+// 도구 '기타' + 버전: '기타'를 빼고 괄호 한 번
+assert.equal(buildReport({ meta: { ...meta, tool: '기타', toolVersion: '연습용 답변 · GPT 형식', date: '2026-11-19' }, answer: 'a', conclusion: '', compared: '', ratio: 0, items: [] })[0].body, '연습용 답변 · GPT 형식 (2026.11.19 사용)');
+assert.equal(buildReport({ meta: { ...meta, tool: '기타', toolVersion: '', date: '2026-11-19' }, answer: 'a', conclusion: '', compared: '', ratio: 0, items: [] })[0].body, '기타(2026.11.19 사용)');
 const v1 = r1[3].body;
 assert.ok(v1.includes('확인이 필요한 주장 4개 중 확인함 1 · 문제 발견 1 · 사용 안 함 1 · 미확인 1, AI 표시 전 먼저 의심한 비율 50%'));
 assert.ok(v1.includes('① AI 답변 중 "2023년 Nature에 실린 Walters와…"에서 Nature 부분이 실제와 다르게 답변됨'), v1); // 띄어쓰기 단위로 자름

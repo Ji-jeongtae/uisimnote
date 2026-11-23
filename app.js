@@ -1014,7 +1014,8 @@ function missedByType(a) {
   }
   return [...g.values()];
 }
-const prevEntry = (hist) => hist.filter((h) => h.id !== state.sessionId).at(-1) || null;
+// 시연 기록(demo: 시연 모드나 [샘플 데이터 채우기])은 힌트 카드·놓친 유형 이어가기 계산에서 뺀다
+const prevEntry = (hist) => hist.filter((h) => h.id !== state.sessionId && !h.demo).at(-1) || null;
 const pendingOf = (h) => (Array.isArray(h?.pending) ? h.pending : Array.isArray(h?.missed) ? h.missed : []);
 function missedSummary(a, hist) {
   const prev = pendingOf(prevEntry(hist));
@@ -1071,7 +1072,7 @@ function recordHistory(a, vs) {
     unseen: vs.unseen,
     sources: vs.sources,
     mediaUsed: vs.mediaUsed,
-    demo: state.ai.model?.startsWith('시연') || false,
+    demo: !!(state.ai.model?.startsWith('시연') || state.sampleApplied), // 샘플 데이터를 채운 실행도 시연 기록
     nextPrompt: nextText(a),
     nextConds: Object.keys(NEXT_COND).filter((k) => nextChecked(a)[k]),
   };
@@ -1728,7 +1729,10 @@ function confirmPaste(quiet = false) {
     if (conv.tool) state.meta.tool = conv.tool;
     if (conv.share && !state.meta.shareUrl) state.meta.shareUrl = conv.share;
   }
-  state.meta.date = today();
+  // 사용 날짜: 예시면 예시에 적힌 날짜, 학생이 '사용 날짜' 칸을 고쳤으면 그 값, 아니면 오늘
+  const exMeta = cachedExample(state.answer)?.meta;
+  if (exMeta?.date) state.meta.date = exMeta.date;
+  else if (!state.meta.date || !state.dateManual) state.meta.date = today();
   if (!state.meta.purpose.trim() || state.purposeAuto) { state.meta.purpose = guessPurpose(state.meta.question); state.purposeAuto = true; }
   state.autoFilled = true;
   state.confirmedFor = state.answer.trim();
@@ -1785,6 +1789,8 @@ $view.addEventListener('input', (e) => {
     setPath(state, el.dataset.bind, el.value);
     if (el.dataset.bind === 'meta.shareUrl') scheduleShare(el.value);
     if (el.dataset.bind === 'meta.purpose') state.purposeAuto = false;
+    if (el.dataset.bind === 'meta.date') state.dateManual = true;
+    if (el.dataset.bind === 'answer') state.dateManual = false; // 새 답변이면 [확인] 때 다시 오늘로
     if (el.dataset.bind === 'answer') document.getElementById('answer-count').textContent = `${el.value.length.toLocaleString()} / 20,000자`;
     if (el.dataset.bind === 'summary') document.getElementById('summary-count').textContent = `${el.value.length} / 150자`;
     if (el.dataset.bind === 'summary' || el.dataset.bind === 'conclusion') {
