@@ -92,19 +92,19 @@ assert.equal(linkOf('자료 이름만'), '');
 // 정정 방식 3가지: 고침(기본·예전 문장 그대로) / 삭제 / 표현 완화
 const r4 = buildReport({ meta, answer: 'a', conclusion: 'c', compared: '', ratio: 0, items: [
   { no: 2, text: 't', verdict: 'problem', fixMode: 'fix', problem: 'Nature Education', cross: 'Kasneci 외(2023) https://doi.org/10.1016/j.lindif.2023.102274', fix: 'Learning and Individual Differences' },
-  { no: 3, text: 't', verdict: 'problem', fixMode: 'delete', problem: '김민지와 박서준(2024)의 연구', cross: 'RISS·Google Scholar·KCI https://www.riss.kr/search/Search.do?query=김민지+박서준', fix: '' },
+  { no: 3, text: 't', verdict: 'problem', fixMode: 'delete', problem: 'Whitfield와 Okafor(2024)의 연구', cross: 'RISS·Google Scholar·KCI https://www.riss.kr/search/Search.do?query=Whitfield+Okafor', fix: '' },
   { no: 5, text: 't', verdict: 'problem', fixMode: 'soften', problem: '대신하기 때문입니다', cross: 'RISS·Google Scholar https://www.riss.kr/search/Search.do?query=AI', fix: 'AI 사용이 글쓰기 실력에 영향을 줄 수 있다는 우려가 있다', location: '결론' },
   { no: 6, text: 't', verdict: 'problem', fixMode: '이상한 값', problem: 'p', cross: '원문', fix: '정답' },
 ] });
 const v4 = r4[3].body;
 // [AI 답변의 문제점 발견]도 정정 방식에 맞춘다
 assert.ok(v4.includes('① AI 답변 중 "t"에서 Nature Education 부분이 실제와 다르게 답변됨'), v4);
-assert.ok(v4.includes('② AI 답변 중 "t"에서 김민지와 박서준(2024)의 연구 부분의 출처를 확인할 수 없음'), v4);
+assert.ok(v4.includes('② AI 답변 중 "t"에서 Whitfield와 Okafor(2024)의 연구 부분의 출처를 확인할 수 없음'), v4);
 assert.ok(v4.includes('③ AI 답변 중 "t"에서 대신하기 때문입니다 부분이 근거 없이 단정됨'), v4);
 assert.ok(v4.includes('④ AI 답변 중 "t"에서 p 부분이 실제와 다르게 답변됨'), v4);
 // 인용 발췌: 30자 안, 띄어쓰기 단위
 assert.equal(head30('짧은 문장'), '짧은 문장');
-assert.equal(head30('김민지와 박서준(2024)의 연구는 국내 대학생 312명을 대상으로 AI 사용 집단의'), '김민지와 박서준(2024)의 연구는 국내 대학생…');
+assert.equal(head30('Whitfield와 Okafor(2024)의 연구는 국내 대학생 312명을 대상으로 AI 사용 집단의'), 'Whitfield와 Okafor(2024)의 연구는…');
 assert.equal(head30('종합하면, AI를 쓰면 글쓰기 실력이 떨어지는 것은 AI가 생각하는 과정을'), '종합하면, AI를 쓰면 글쓰기 실력이 떨어지는 것은…');
 assert.equal(head30('가'.repeat(40)), `${'가'.repeat(30)}…`); // 띄어쓰기가 없으면 글자로
 for (const t of ['스튜디오드래곤은 2016년 CJ ENM의 드라마 사업부문을 물적분할해 설립됐어.', '2023년 Nature에 실린 Walters와 Wilder의 연구는 ChatGPT가']) {
@@ -112,7 +112,7 @@ for (const t of ['스튜디오드래곤은 2016년 CJ ENM의 드라마 사업부
   assert.ok(h.length <= 30 && t.startsWith(h) && /\s/.test(t[h.length]), h); // 단어 중간에서 끊기지 않음
 }
 assert.ok(v4.includes('① [원문 2번째 문장] Kasneci 외(2023)를 직접 찾아 교차 검증한 후, Learning and Individual Differences로 정정함\n'), v4);
-assert.ok(v4.includes('② [원문 3번째 문장] RISS·Google Scholar·KCI에서 직접 찾아보았으나 확인되지 않아 해당 내용을 삭제함\n   대조 자료 링크: https://www.riss.kr/search/Search.do?query=김민지+박서준'), v4);
+assert.ok(v4.includes('② [원문 3번째 문장] RISS·Google Scholar·KCI에서 직접 찾아보았으나 확인되지 않아 해당 내용을 삭제함\n   대조 자료 링크: https://www.riss.kr/search/Search.do?query=Whitfield+Okafor'), v4);
 assert.ok(v4.includes("③ [원문 5번째 문장] RISS·Google Scholar에서 근거를 확인할 수 없어 'AI 사용이 글쓰기 실력에 영향을 줄 수 있다는 우려가 있다'로 표현을 완화함, 결론에 반영"), v4);
 assert.ok(v4.includes('④ [원문 6번째 문장] 원문을 직접 찾아 교차 검증한 후, 정답으로 정정함'), v4); // 모르는 값은 고침으로
 assert.ok(!v4.includes('정정 내용 작성 필요'), v4); // 삭제는 정정 칸이 비어도 '작성 필요'가 아니다

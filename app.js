@@ -715,7 +715,8 @@ function tipBlock(id, it) {
   const causal = CAUSAL_RE.test(state.sentences.find((s) => s.id === id)?.text || '');
   types = types.filter((t) => t !== '인과관계');
   if (causal) types.unshift('인과관계');
-  const tips = [...new Set(types.map((t) => TIP[t]).filter(Boolean))].slice(0, 3);
+  // 인과 문구가 맨 위에 붙으면 '의견·요약' 문구(개념 정의·일반 상식과 같은 문장)는 뺀다
+  const tips = [...new Set(types.map((t) => TIP[t]).filter((t) => t && !(causal && t === TIP_OPINION)))].slice(0, 3);
   if (!tips.length) return '';
   const same = state.ai && state.selected.includes(id) && manualTypesOf(id).length && reasonMatches(id, it);
   return `<div class="tip"><b>AI 조교의 한마디</b>${same ? '<p class="tip-same">고른 이유도 AI와 같아요</p>' : ''}${tips.map((t) => `<p>${esc(t)}</p>`).join('')}</div>`;
