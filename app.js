@@ -706,9 +706,15 @@ function predictionBlock(id, it, a) {
   return `<div class="pred">${hlHtml}<span class="pred-mine">내 예측: ${r ? esc(r) : '고르지 않음'}</span>${cmp}</div>`;
 }
 
+// '인과관계' 조언은 문장에 인과 표현이 있을 때만, 있으면 맨 위에 (2026-11-26 정태).
+// 분류 결과(유형 꼬리표)는 Gemini 결과 그대로 두고 조언 문구를 고르는 규칙만 바꾼다. (Gemini의 reason은 원래 화면에 안 씀)
+const CAUSAL_RE = /때문|따라서|그래서|원인|탓|로 인해|결과적으로/;
 function tipBlock(id, it) {
-  const types = [...typesOf(it)];
+  let types = [...typesOf(it)];
   if (state.keepMine?.[id]) for (const t of reasonTypesOf(id)) if (!types.includes(t)) types.push(t);
+  const causal = CAUSAL_RE.test(state.sentences.find((s) => s.id === id)?.text || '');
+  types = types.filter((t) => t !== '인과관계');
+  if (causal) types.unshift('인과관계');
   const tips = [...new Set(types.map((t) => TIP[t]).filter(Boolean))].slice(0, 3);
   if (!tips.length) return '';
   const same = state.ai && state.selected.includes(id) && manualTypesOf(id).length && reasonMatches(id, it);
