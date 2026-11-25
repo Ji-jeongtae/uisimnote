@@ -1178,3 +1178,6 @@ textarea.answer-input:not(:placeholder-shown) { border-style: solid; border-colo
 /* 버튼은 제목 바로 아래 — 그리는 중에도 첫 화면에서 바로 넘어갈 수 있게 */
 .intro-head .intro-actions { margin-top: 1.3rem; }
 .intro-head { margin-bottom: 1.8rem; }
+
+/* 2·3단계 (2026-11-26): 문장이 있는 카드는 1단계 붙여넣기 상자처럼 흰 바탕으로, 종이 배경과 구분 */
+.panel:has(> #answer-select), .panel:has(> #answer-compare) { background-color: #fff; border-color: var(--paper-edge); }
