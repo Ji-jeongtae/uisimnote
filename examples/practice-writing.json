@@ -1,5 +1,5 @@
 {
-  "note": "연습용 답변: 의심노트_GPT테스트기록_2026-11-19.md의 T2 원문(Claude가 GPT 답변 형식으로 쓴 것, 실제 ChatGPT 출력 아님). 오류 3개를 일부러 넣음 — ① Kasneci 외(2023) 학술지를 'Nature Education'으로(실제 Learning and Individual Differences 103, 102274, doi:10.1016/j.lindif.2023.102274) ② 지어낸 연구 '김민지·박서준(2024), 대학생 312명, 글쓰기 점수 12% 하락' ③ 'AI가 생각하는 과정을 대신하기 때문'이라는 인과 단정. 첫 단락(질문)은 meta.question으로 옮김. 2단계 후보(candidates)는 lib/candidates.js 규칙으로 고른 것. 분류는 실제 Gemini 결과(2026-11-24, gemini-2.5-flash, 프롬프트 v3 (2026-11-19)) — 후보 4문장만 분류.",
+  "note": "연습용 답변: 의심노트_GPT테스트기록_2026-11-19.md의 T2 원문(Claude가 GPT 답변 형식으로 쓴 것, 실제 ChatGPT 출력 아님). 오류 3개를 일부러 넣음 — ① Kasneci 외(2023) 학술지를 'Nature Education'으로(실제 Learning and Individual Differences 103, 102274, doi:10.1016/j.lindif.2023.102274) ② 지어낸 연구 'Whitfield·Okafor(2024), 대학생 312명, 글쓰기 점수 12% 하락' ③ 'AI가 생각하는 과정을 대신하기 때문'이라는 인과 단정. 첫 단락(질문)은 meta.question으로 옮김. 2단계 후보(candidates)는 lib/candidates.js 규칙으로 고른 것. 분류는 실제 Gemini 결과(2026-11-24, gemini-2.5-flash, 프롬프트 v3 (2026-11-19)) — 후보 4문장만 분류.",
   "label": "연습용 · AI와 대학생 글쓰기",
   "practice": "연습용: 오류 3개를 일부러 넣은 답변",
   "meta": {
@@ -11,7 +11,7 @@
     "shareUrl": "",
     "toolOther": ""
   },
-  "answer": "생성형 AI와 대학생 글쓰기에 관한 대표 연구 세 편을 정리했어요.\n\n1. Kasneci 외(2023)는 Nature Education에 발표한 논문에서 ChatGPT가 글쓰기 피드백을 개인화해 학습을 도울 수 있다고 밝혔습니다.\n2. 김민지와 박서준(2024)의 연구는 국내 대학생 312명을 대상으로 AI 사용 집단의 글쓰기 점수가 평균 12% 낮아졌다고 보고했습니다.\n3. Bašić 외(2023)는 ChatGPT를 쓴 학생들의 에세이 점수가 쓰지 않은 학생보다 높지 않았다고 밝혔습니다.\n\n종합하면, AI를 쓰면 글쓰기 실력이 떨어지는 것은 AI가 생각하는 과정을 대신하기 때문입니다. 따라서 초안은 직접 쓰고 AI는 퇴고에만 쓰는 것이 바람직합니다.",
+  "answer": "생성형 AI와 대학생 글쓰기에 관한 대표 연구 세 편을 정리했어요.\n\n1. Kasneci 외(2023)는 Nature Education에 발표한 논문에서 ChatGPT가 글쓰기 피드백을 개인화해 학습을 도울 수 있다고 밝혔습니다.\n2. Whitfield와 Okafor(2024)의 연구는 국내 대학생 312명을 대상으로 AI 사용 집단의 글쓰기 점수가 평균 12% 낮아졌다고 보고했습니다.\n3. Bašić 외(2023)는 ChatGPT를 쓴 학생들의 에세이 점수가 쓰지 않은 학생보다 높지 않았다고 밝혔습니다.\n\n종합하면, AI를 쓰면 글쓰기 실력이 떨어지는 것은 AI가 생각하는 과정을 대신하기 때문입니다. 따라서 초안은 직접 쓰고 AI는 퇴고에만 쓰는 것이 바람직합니다.",
   "candidates": [
     2,
     3,
@@ -57,7 +57,7 @@
           "statistics"
         ],
         "keywords": [
-          "김민지 박서준 2024 대학생 AI 글쓰기 점수",
+          "Whitfield Okafor 2024 대학생 AI 글쓰기 점수",
           "AI 사용 글쓰기 능력 저하"
         ],
         "sites": [
@@ -113,8 +113,8 @@
     "3": {
       "verdict": "problem",
       "fixMode": "delete",
-      "problem": "김민지와 박서준(2024)의 연구",
-      "cross": "RISS·Google Scholar·KCI https://www.riss.kr/search/Search.do?isDetailSearch=N&searchGubun=true&query=김민지+박서준+AI+글쓰기"
+      "problem": "Whitfield와 Okafor(2024)의 연구",
+      "cross": "RISS·Google Scholar·KCI https://www.riss.kr/search/Search.do?isDetailSearch=N&searchGubun=true&query=Whitfield+Okafor+AI+글쓰기"
     },
     "4": {
       "verdict": "ok",
@@ -130,5 +130,5 @@
     }
   },
   "sampleVerifyNote": "연습용 답변에 심은 오류 3개(①②③) 기준 4단계 샘플. Bašić 외(2023)는 실제 논문(Humanities and Social Sciences Communications, 2023)이라 확인함.",
-  "sampleConclusion": "생성형 AI가 대학생 글쓰기에 도움이 된다는 근거와 효과가 없다는 근거가 함께 있다고 정리하되, 확인되지 않은 김민지·박서준(2024) 연구는 빼고, 'AI가 생각을 대신해 실력이 떨어진다'는 인과는 단정하지 않고 우려로만 쓴다."
+  "sampleConclusion": "생성형 AI가 대학생 글쓰기에 도움이 된다는 근거와 효과가 없다는 근거가 함께 있다고 정리하되, 확인되지 않은 Whitfield·Okafor(2024) 연구는 빼고, 'AI가 생각을 대신해 실력이 떨어진다'는 인과는 단정하지 않고 우려로만 쓴다."
 }
