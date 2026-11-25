@@ -1284,6 +1284,12 @@ function viewIntro() {
     <div class="intro-head">
       <h1 id="intro-title" class="intro-title">믿기 전에, <span class="intro-em"><span class="fx-t">의심하기</span>${svg('ip-hl ip-title', '0 0 100 20', path('M1 13.2C30 12.2 64 13.8 99 12.4', 0, 0.45))}</span></h1>
       <p class="intro-lead">AI 답변에서 확인할 곳을 먼저 찾고, 직접 고친 기록을 증빙서로 남겨요.</p>
+    <div class="intro-actions">
+      <button type="button" class="primary" data-action="intro-practice">연습용 답변으로 해 보기</button>
+      ${hasWork()
+    ? `<button type="button" data-action="intro-continue">하던 작업 이어서 하기 · ${state.step}단계</button>`
+    : '<button type="button" data-action="intro-paste">내 AI 대화 붙여넣기</button>'}
+    </div>
     </div>
 
     <figure class="intro-sheet" aria-label="연습용 AI 답변을 빨간펜으로 고친 예">
@@ -1301,12 +1307,6 @@ function viewIntro() {
       <li data-g="3"><span class="ic-n">3</span><strong>지금도 맞는가</strong><span class="ic-s">날짜·제도가 그사이 바뀌지 않았는지</span></li>
     </ol>
 
-    <div class="intro-actions">
-      <button type="button" class="primary" data-action="intro-practice">연습용 답변으로 해 보기</button>
-      ${hasWork()
-    ? `<button type="button" data-action="intro-continue">하던 작업 이어서 하기 · ${state.step}단계</button>`
-    : '<button type="button" data-action="intro-paste">내 AI 대화 붙여넣기</button>'}
-    </div>
   </section>`;
 }
 // 화면에 들어오면 한 번 그린다. 줄인 동작이면 처음부터 다 그려진 상태(.anim 을 붙이지 않음).
@@ -1336,7 +1336,7 @@ function playIntro() {
   if (!('IntersectionObserver' in window)) { play(); return; }
   const io = new IntersectionObserver((ents) => {
     if (ents.some((x) => x.isIntersecting)) { io.disconnect(); play(); }
-  }, { threshold: 0.35 });
+  }, { threshold: 0.1 }); // 낮은 화면(1280×630)에서도 첫 화면에서 바로 그리기 시작
   io.observe(sheet);
 }
 

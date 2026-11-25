@@ -973,16 +973,13 @@ body.is-intro nav[aria-label="진행 단계"] { display: none; }
 .intro.anim .ip path { stroke-dasharray: 1 2; stroke-dashoffset: 1; opacity: 0; }
 .intro.anim .ip-note { clip-path: inset(-20% 100% -20% 0); }
 .intro.anim .intro-lines li { opacity: 0; transform: translateY(6px); }
-.intro.anim .intro-checks, .intro.anim .intro-actions { opacity: 0; }
 .intro.anim.play .ip path { animation: ip-draw var(--t) var(--d) cubic-bezier(.45, .05, .35, 1) forwards; }
 .intro.anim.play .ip-note { animation: ip-write .5s var(--d) linear forwards; }
 .intro.anim.play .intro-lines li { animation: ip-line .35s var(--d) ease-out forwards; }
-.intro.anim.play .intro-checks { animation: ip-fade .4s 4.3s ease-out forwards; }
-.intro.anim.play .intro-actions { animation: ip-fade .4s 4.4s ease-out forwards; }
 @keyframes ip-draw { from { opacity: 1; stroke-dashoffset: 1; } to { opacity: 1; stroke-dashoffset: 0; } }
 @keyframes ip-write { to { clip-path: inset(-20% -5% -20% 0); } }
 @keyframes ip-line { to { opacity: 1; transform: none; } }
-@keyframes ip-fade { to { opacity: 1; } }
+/* 세 가지 질문·버튼은 처음부터 보인다(2026-11-26: 시간이 모자라면 바로 넘기게) */
 @media (prefers-reduced-motion: reduce) {
   .intro .ip path { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; }
   .intro .ip-note, .intro .intro-lines li, .intro .intro-checks, .intro .intro-actions { animation: none !important; clip-path: none !important; opacity: 1 !important; transform: none; }
@@ -1178,3 +1175,6 @@ textarea.answer-input:not(:placeholder-shown) { border-style: solid; border-colo
   .stepper li:not(:last-child) { flex: 1 1 auto; }
   .stepper li.current .lbl { display: inline; overflow: visible; }
 }
+/* 버튼은 제목 바로 아래 — 그리는 중에도 첫 화면에서 바로 넘어갈 수 있게 */
+.intro-head .intro-actions { margin-top: 1.3rem; }
+.intro-head { margin-bottom: 1.8rem; }
