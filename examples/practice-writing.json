@@ -1,5 +1,5 @@
 {
-  "note": "연습용 답변: 의심노트_GPT테스트기록_2026-11-19.md의 T2 원문(Claude가 GPT 답변 형식으로 쓴 것, 실제 ChatGPT 출력 아님). 오류 3개를 일부러 넣음 — ① Kasneci 외(2023) 학술지를 'Nature Education'으로(실제 Learning and Individual Differences 103, 102274, doi:10.1016/j.lindif.2023.102274) ② 지어낸 연구 'Whitfield·Okafor(2024), 대학생 312명, 글쓰기 점수 12% 하락' ③ 'AI가 생각하는 과정을 대신하기 때문'이라는 인과 단정. 첫 단락(질문)은 meta.question으로 옮김. 2단계 후보(candidates)는 lib/candidates.js 규칙으로 고른 것. 분류는 실제 Gemini 결과(2026-11-24, gemini-2.5-flash, 프롬프트 v3 (2026-11-19)) — 후보 4문장만 분류.",
+  "note": "연습용 답변: 의심노트_GPT테스트기록_2026-11-19.md의 T2 원문(Claude가 GPT 답변 형식으로 쓴 것, 실제 ChatGPT 출력 아님). 오류 3개를 일부러 넣음 — ① Kasneci 외(2023) 학술지를 'Nature Education'으로(실제 Learning and Individual Differences 103, 102274, doi:10.1016/j.lindif.2023.102274) ② 지어낸 연구 'Whitfield·Okafor(2024), 대학생 312명, 글쓰기 점수 12% 하락' ③ 'AI가 생각하는 과정을 대신하기 때문'이라는 인과 단정. 첫 단락(질문)은 meta.question으로 옮김. 2단계 후보(candidates)는 lib/candidates.js 규칙으로 고른 것. 분류는 실제 Gemini 결과(2026-11-24, gemini-2.5-flash, 프롬프트 v3 (2026-11-19)) — 후보 4문장만 분류.\n2026-11-26: 지어낸 연구의 가명을 '김민지·박서준'에서 'Whitfield·Okafor'로 바꿈. 분류 결과(유형·등급)는 바꾸기 전 문장에 대한 실제 Gemini 결과 그대로.",
   "label": "연습용 · AI와 대학생 글쓰기",
   "practice": "연습용: 오류 3개를 일부러 넣은 답변",
   "meta": {
