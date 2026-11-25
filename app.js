@@ -911,8 +911,6 @@ function applySampleVerify(a) {
   const sample = cachedExample(state.answer)?.sampleVerify;
   if (!sample) return false;
   for (const id of a.targets) if (sample[id]) state.verify[id] = { ...sample[id] };
-  const concl = cachedExample(state.answer)?.sampleConclusion;
-  if (concl && (!state.conclusion.trim() || state.conclusion === state.conclusionAuto)) { state.conclusion = concl; state.conclusionAuto = ''; } // 증빙서 4번 [최종 결론] 샘플
   state.sampleApplied = true;
   // '문제 있음' 문장을 열어 채워진 칸을 바로 보여 준다
   active4 = a.targets.find((id) => sample[id]?.verdict === 'problem') ?? active4;
@@ -1088,20 +1086,10 @@ function recordHistory(a, vs) {
   return hist;
 }
 
-// 모두 '확인함'(또는 '안 씀')이고 문제가 없으면 최종 결론을 자동으로 채운다.
-// 비어 있거나 전에 자동으로 넣은 그대로일 때만 바꾼다(학생이 고친 결론은 건드리지 않음).
-function autoConclusionText(a, vs) {
-  if (!a.targets.length || vs.problem || !vs.ok || vs.ok + vs.unused !== a.targets.length) return '';
-  const src = (state.compared || '').trim();
-  return `확인이 필요한 주장 ${vs.ok}개를 ${src ? `${src}${josa(src, '과/와')} ` : '출처 자료와 '}대조해 모두 확인했고 실제와 다른 부분을 찾지 못했다${vs.unused ? `(쓰지 않기로 한 ${vs.unused}개 제외)` : ''}. 확인한 내용은 출처와 함께 인용해 활용 목적 범위 안에서 참고 자료로 쓴다.`;
-}
-function applyAutoConclusion(a, vs) {
-  const cur = (state.conclusion || '').trim();
-  if (cur && cur !== state.conclusionAuto) return;
-  const t = autoConclusionText(a, vs);
-  state.conclusion = t;
-  state.conclusionAuto = t;
-  save();
+function applyAutoConclusion() {
+  // 2026-11-26: 최종 결론은 학생이 '기억할 것'을 보고 직접 쓴다. 예전에 자동으로 넣은 결론이 남아 있으면 비운다.
+  if (state.conclusionAuto && state.conclusion === state.conclusionAuto) { state.conclusion = ''; save(); }
+  state.conclusionAuto = '';
 }
 
 function viewStep5() {
@@ -1110,50 +1098,63 @@ function viewStep5() {
   applyAutoConclusion(a, vs);
   const hist = recordHistory(a, vs) || store.get(HISTORY_KEY, []);
   const picked = state.doubtLog?.ids.length ?? state.selected.length;
-  const head = '<h2>5. 증빙서 미리보기</h2>';
-  const main = `
-  ${vs.uncheckedMust.length ? `<div class="warn-must no-print">
+  const sample = cachedExample(state.answer)?.sampleConclusion;
+  // 5단계(2026-11-26 정태): 첫 화면 = 먼저 의심한 비율 + 다음 질문, 아래로 내리면 증빙서.
+  // 증빙서 옆에서 '기억할 것'을 보며 최종 결론을 직접 쓴다(자동 결론·메모 칸 없음). 시연용 예시는 [샘플 결론 넣기].
+  const head = `<div class="step-head s5-head"><h2>5. 증빙서 미리보기</h2>
+    <div class="s5-nav no-print">
+      <button class="small-btn" data-action="go" data-step="4">← 이전</button>
+      <button class="primary small-btn" data-action="copy-all">증빙서 전체 복사</button>
+    </div></div>`;
+  const hero = `
+  <section class="s5-hero" aria-label="이번 결과">
+    <div class="s5-hero-grid">
+      <div class="panel side-metrics s5-score" title="AI 표시 전에 고른 문장 ${picked}개 · 회차 기록은 이 브라우저에만 저장됩니다">
+        <div class="stat hero big"><div class="k">AI 표시 전 먼저 의심한 비율</div><div class="v"><span id="ratio5">${a.ratio}</span><small>%</small></div><div class="k">확인이 필요한 ${a.flagged.length}개 중 ${a.first.length}개를 먼저 찾음</div></div>
+        ${missedNote(hist.find((h) => h.id === state.sessionId))}
+      </div>
+      ${nextQuestionCard(a)}
+    </div>
+    <button type="button" class="s5-down no-print" data-action="to-doc">아래로 내려 최종 결론 쓰고 증빙서 보기 <span aria-hidden="true">↓</span></button>
+  </section>`;
+  const warn = vs.uncheckedMust.length ? `<div class="warn-must no-print">
     <strong>아직 보지 않은 확인 필수 주장 ${vs.uncheckedMust.length}개</strong>
     <ul style="margin:.4rem 0;padding-left:1.2rem">${vs.uncheckedMust.map((id) => `<li style="font-family:var(--serif)">${esc(state.sentences.find((s) => s.id === id)?.text)}</li>`).join('')}</ul>
     <button data-action="go" data-step="4">4단계로 돌아가기</button>
-  </div>` : ''}
-
+  </div>` : '';
+  const doc = `
+  ${warn}
   <div class="panel report">
-    <div class="report-head"><h3>AI 활용 서면 증빙서</h3></div>
+    <div class="report-head"><h3>AI 활용 서면 증빙서</h3>
+      <div class="doc-tools no-print" role="toolbar" aria-label="증빙서 내보내기">
+        <button type="button" class="small-btn" data-action="copy-all">전체 복사</button>
+        <button type="button" class="small-btn" data-action="print">인쇄 / PDF</button>
+        <button type="button" class="small-btn" data-action="export">JSON</button>
+      </div>
+    </div>
     <div id="report-blocks">${reportBlocksHtml(a)}</div>
   </div>
-
-  <div class="panel no-print">
-    <h3>기억할 것 메모</h3>
-    <p class="small muted">보고서에 반영해야 할 것만 검증 결과에서 모았어요. 더 기억할 것은 오른쪽에 적어 두세요. 메모는 증빙서에 들어가지 않습니다.</p>
-    <div class="grid-2">
-      <div class="remember" aria-label="보고서에 반영할 것">${rememberList(a)}</div>
-      <label class="field" style="margin:0"><span>메모</span>
-        <textarea data-bind="memo" maxlength="1000" rows="8" placeholder="예: 55%·18%는 모델별 수치라 함께 써야 함 / 2장에는 원문 표 인용">${esc(state.memo || '')}</textarea></label>
-    </div>
-    <label class="field" style="margin:1rem 0 0"><span>최종 결론 <em>${state.conclusionAuto && state.conclusion === state.conclusionAuto ? '모두 확인했고 문제가 없어 자동으로 채웠어요, 내 말로 고쳐 써도 돼요' : '검증 결과를 반영해 내 말로 쓰세요'} · 증빙서 4번 '단계별 비판적 검증 요약'의 [최종 결론]에 들어가요</em></span>
-      <textarea data-bind="conclusion" rows="3">${esc(state.conclusion)}</textarea></label>
-  </div>
-
   ${keepNote(a)}`;
-  const side = `
-  <div class="side-nav no-print">
-    <button class="small-btn" data-action="go" data-step="4">← 이전</button>
-    <span class="spacer"></span>
-    <button class="primary small-btn" data-action="copy-all">증빙서 전체 복사</button>
-  </div>
-  <div class="panel side-metrics" title="AI 표시 전에 고른 문장 ${picked}개 · 회차 기록은 이 브라우저에만 저장됩니다">
-    <!-- 5단계는 '먼저 의심한 비율' 하나만 크게(2026-11-24 정태). 이유도 같음·회차 막대는 뺐다 -->
-    <div class="stat hero big"><div class="k">AI 표시 전 먼저 의심한 비율</div><div class="v"><span id="ratio5">${a.ratio}</span><small>%</small></div><div class="k">확인이 필요한 ${a.flagged.length}개 중 ${a.first.length}개를 먼저 찾음</div></div>
-    ${missedNote(hist.find((h) => h.id === state.sessionId))}
-  </div>
-  ${nextQuestionCard(a)}
-  <div class="side-extra no-print">
-    <button class="small-btn" data-action="print">인쇄 / PDF</button>
-    <button class="small-btn" data-action="export">JSON 내보내기</button>
-    <button class="small-btn" data-action="new">새로 시작</button>
+  const write = `
+  <div class="panel s5-conclude no-print">
+    <div class="report-head"><h3>최종 결론 쓰기</h3>${sample ? '<button type="button" class="small-btn" data-action="sample-conclusion">샘플 결론 넣기</button>' : ''}</div>
+    <p class="small muted s5-how">아래 '기억할 것'을 보고 내 말로 2~3문장을 쓰세요. 쓰는 대로 증빙서 4번 [최종 결론]에 들어가요.</p>
+    <ol class="s5-guide">
+      <li><b>그대로 쓸 것</b>은 출처와 함께 쓴다고 밝히기</li>
+      <li><b>고친 것</b>은 고친 내용으로, <b>뺀 것</b>은 빼고 쓰기</li>
+      <li>근거가 약한 주장은 <b>단정하지 않고</b>, 활용 목적 범위 안에서만 쓰기</li>
+    </ol>
+    <label class="field s5-field"><span>최종 결론 <em>직접 쓰기</em></span>
+      <textarea data-bind="conclusion" rows="5" placeholder="예: …은 출처를 확인해 그대로 쓰고, …은 …(으)로 고쳐 쓴다. 확인되지 않은 …은 뺀다.">${esc(state.conclusion)}</textarea></label>
+    <h4 class="s5-remember-title">기억할 것 <span class="muted small">검증 결과에서 모았어요</span></h4>
+    <div class="remember" aria-label="보고서에 반영할 것">${rememberList(a)}</div>
   </div>`;
-  return splitView(head, main, side, 'swap'); // 넓은 화면: 왼쪽 = 점수·다음 질문, 오른쪽 = 증빙서(2026-11-24 정태)
+  return `${head}${hero}
+  <div class="split swap s5-split" id="s5-doc">
+    <div class="col-main">${doc}</div>
+    <aside class="col-side" aria-label="최종 결론 쓰기">${write}</aside>
+  </div>
+  <div class="side-extra no-print s5-extra"><button class="small-btn" data-action="new">새로 시작</button></div>`;
 }
 
 // 이번 회차에 놓친 유형 + '문제 있음' 유형 → 제안할 조건 키
@@ -1206,27 +1207,38 @@ function nextQuestionCard(a) {
   </div>`;
 }
 
-// 5단계 '기억할 것': 검증 결과에서 보고서에 반영할 것만 (고친 것 / 쓰지 않기로 한 것 / 아직 확인 안 한 것)
+// 5단계 '기억할 것': 검증 결과에서 결론·보고서에 반영할 것을 판정별로, 어떻게 쓰면 되는지까지
 function rememberList(a) {
   const text = (id) => state.sentences.find((s) => s.id === id)?.text || '';
-  const short = (t) => (t.length > 46 ? `${t.slice(0, 46)}…` : t);
-  const fixed = [], unused = [], unseen = [];
+  const short = (t) => (t.length > 60 ? `${t.slice(0, 60)}…` : t);
+  const linkA = (v) => { const l = linkOf(v.source) || linkOf(v.cross); return l ? `<a href="${esc(l)}" target="_blank" rel="noopener noreferrer" class="small">대조 자료 ↗</a>` : '<span class="small muted">대조 자료 링크 없음</span>'; };
+  const HOW = {
+    fix: (v) => { const t = fixText(v) || '(정정 미작성)'; return `결론·보고서에는 <b>${esc(t)}</b>${josa(t, '으로/로')} 고쳐 써요.`; },
+    delete: () => '확인되지 않았으니 결론·보고서에서 <b>빼요</b>.',
+    soften: (v) => `근거가 없으니 단정하지 말고 <b>‘${esc(fixText(v) || '(정정 미작성)')}’</b>처럼 약하게 써요.`,
+  };
+  const groups = { fixed: [], ok: [], unused: [], unseen: [] };
   for (const id of a.targets) {
     const v = state.verify[id] || {};
-    if (v.verdict === 'problem') fixed.push({ id, v });
-    else if (v.verdict === 'unused') unused.push(id);
-    else if (v.verdict !== 'ok') unseen.push(id);
+    if (v.verdict === 'problem') groups.fixed.push({ id, v });
+    else if (v.verdict === 'ok') groups.ok.push({ id, v });
+    else if (v.verdict === 'unused') groups.unused.push({ id, v });
+    else groups.unseen.push({ id, v });
   }
-  const sec = (title, items) => (items.length ? `<h4>${title} <span class="muted small">${items.length}</span></h4><ul>${items.join('')}</ul>` : '');
+  const sec = (title, desc, items) => (items.length ? `<h4>${title} <span class="muted small">${items.length}</span></h4><p class="rm-desc">${desc}</p><ul>${items.join('')}</ul>` : '');
   const html = [
-    sec('고쳐서 반영할 것', fixed.map(({ id, v }) => {
-      const link = linkOf(v.cross);
-      return `<li><span class="muted small">원문 ${id}번째 문장</span><div><del>${esc(v.problem || '(문제 발견 미작성)')}</del> → <b>${esc(fixText(v) || '(정정 미작성)')}</b>${fixModeOf(v) === 'soften' ? ' <span class="muted small">(표현 완화)</span>' : ''}${v.location ? ` <span class="muted small">· ${esc(v.location)}</span>` : ''}</div>${link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer" class="small">대조 자료 ↗</a>` : '<span class="small muted">대조 자료 링크 없음</span>'}</li>`;
-    })),
-    sec('쓰지 않기로 한 문장', unused.map((id) => `<li><span class="muted small">원문 ${id}번째 문장</span><div>${esc(short(text(id)))}</div></li>`)),
-    sec('아직 확인하지 않은 문장', unseen.map((id) => `<li><span class="muted small">원문 ${id}번째 문장</span><div>${esc(short(text(id)))}</div></li>`)),
+    sec('고쳐서 반영할 것', '틀렸거나 확인되지 않은 부분이에요. 결론에 그대로 옮기면 안 돼요.', groups.fixed.map(({ id, v }) => `<li>
+      <span class="muted small">원문 ${id}번째 문장 · ${esc(FIX_MODE_LABEL[fixModeOf(v)])}</span>
+      <div class="rm-src">${esc(short(text(id)))}</div>
+      <div><del>${esc(v.problem || '(문제 발견 미작성)')}</del>${fixModeOf(v) === 'delete' ? '' : ` → <b>${esc(fixText(v) || '(정정 미작성)')}</b>`}${v.location ? ` <span class="muted small">· ${esc(v.location)}</span>` : ''}</div>
+      <p class="rm-how">${HOW[fixModeOf(v)](v)}</p>${linkA(v)}</li>`)),
+    sec('확인하고 그대로 쓸 것', '자료와 대조해 맞았던 문장이에요. 쓸 때는 출처를 함께 밝혀요.', groups.ok.map(({ id, v }) => `<li>
+      <span class="muted small">원문 ${id}번째 문장</span>
+      <div class="rm-src">${esc(short(text(id)))}</div>${linkA(v)}</li>`)),
+    sec('쓰지 않기로 한 문장', '보고서와 결론에 넣지 않아요.', groups.unused.map(({ id }) => `<li><span class="muted small">원문 ${id}번째 문장</span><div class="rm-src">${esc(short(text(id)))}</div></li>`)),
+    sec('아직 확인하지 않은 문장', '확인하기 전에는 결론에 넣지 마세요. 쓰려면 4단계에서 먼저 확인해요.', groups.unseen.map(({ id }) => `<li><span class="muted small">원문 ${id}번째 문장</span><div class="rm-src">${esc(short(text(id)))}</div></li>`)),
   ].join('');
-  return html || '<p class="muted small" style="margin:0">고친 문장이나 남은 문장이 없어요. 확인한 내용 그대로 써도 돼요.</p>';
+  return html || '<p class="muted small" style="margin:0">확인할 문장이 없어요.</p>';
 }
 
 function keepNote(a) {
@@ -1253,11 +1265,89 @@ function countUp(el, to, ms = 500) {
   requestAnimationFrame(tick);
 }
 
+/* ---------- 첫 화면: 펜으로 고쳐지는 답변 한 장 (2026-11-26) ----------
+   처음 들어왔을 때(답변 비어 있음 + 아직 시작 전)만. 이미지 없이 SVG·CSS.
+   손글씨는 고칠 구절(span.fx) 기준 em 단위로 놓여서 150% 확대에서도 같은 자리에 붙는다.
+   그리는 순서는 style 의 --d(시작)·--t(길이)로, 전체 4.7초 · 반복 없음 · 줄인 동작이면 다 그려진 상태. */
+// 왼쪽 위 '의심노트'를 누르면 언제든 첫 화면(introOpen). 하던 작업은 그대로 두고 [이어서 하기]로 돌아간다.
+let introOpen = false;
+const hasWork = () => !!state.answer.trim();
+const showIntro = () => introOpen || (state.step === 1 && !state.introSeen && !hasWork());
+function viewIntro() {
+  // pathLength=1 → stroke-dasharray/offset 1 로 '그어지는' 효과
+  const path = (d, delay, dur, cls = '') => `<path class="${cls}" pathLength="1" d="${d}" style="--d:${delay}s;--t:${dur}s"/>`;
+  const svg = (cls, vb, paths) => `<svg class="ip ${cls}" viewBox="${vb}" preserveAspectRatio="none" aria-hidden="true" focusable="false">${paths}</svg>`;
+  const hl = (delay) => svg('ip-hl', '0 0 100 20', path('M1 12.6C22 11.6 58 13.2 99 11.4', delay, 0.4));
+  const note = (text, delay, cls = '') => `<span class="ip-note ${cls}" style="--d:${delay}s" aria-hidden="true">${text}</span>`;
+  return `
+  <section class="intro" id="intro" aria-labelledby="intro-title">
+    <div class="intro-head">
+      <h1 id="intro-title" class="intro-title">믿기 전에, <span class="intro-em"><span class="fx-t">의심하기</span>${svg('ip-hl ip-title', '0 0 100 20', path('M1 13.2C30 12.2 64 13.8 99 12.4', 0, 0.45))}</span></h1>
+      <p class="intro-lead">AI 답변에서 확인할 곳을 먼저 찾고, 직접 고친 기록을 증빙서로 남겨요.</p>
+    </div>
+
+    <figure class="intro-sheet" aria-label="연습용 AI 답변을 빨간펜으로 고친 예">
+      <figcaption class="intro-cap"><span>연습용 AI 답변</span><button type="button" class="ghost small-btn intro-replay" data-intro="replay" hidden>다시 그리기</button></figcaption>
+      <ol class="intro-lines">
+        <li style="--d:.3s">Kasneci 외(2023)는 <span class="fx" data-g="1" tabindex="0" aria-label="Nature Education — 학술지 이름이 틀림, Learning and Individual Differences로 고침">${hl(0.5)}<span class="fx-t">Nature Education</span>${svg('ip-pen', '0 0 100 20', path('M-3 12.2C28 10.6 66 10.4 103 8.6', 0.95, 0.25))}${note('Learning and Individual Differences', 1.2)}</span>에 발표한 논문에서 ChatGPT가 글쓰기 피드백을 개인화해 학습을 도울 수 있다고 밝혔습니다.</li>
+        <li style="--d:1.55s"><span class="fx" data-g="1" tabindex="0" aria-label="김민지와 박서준(2024) — 찾을 수 없는 연구, 확인 안 됨, 삭제">${hl(1.75)}<span class="fx-t">김민지와 박서준(2024)</span>${svg('ip-pen', '0 0 100 20', path('M1 3C30 7 66 13 99 17.4', 2.2, 0.18) + path('M2 17.6C34 13 70 7.4 98.5 2.6', 2.4, 0.18))}${note('확인 안 됨, 삭제', 2.62)}</span>의 연구는 국내 대학생 312명을 대상으로 AI 사용 집단의 글쓰기 점수가 평균 12% 낮아졌다고 보고했습니다.</li>
+        <li style="--d:3.05s">종합하면, AI를 쓰면 글쓰기 실력이 떨어지는 것은 AI가 생각하는 과정을 대신하기 <span class="fx fx-ring" data-g="2" tabindex="0" aria-label="때문입니다 — 근거 없이 원인을 단정함, 근거?"><span class="fx-t">때문입니다</span>${svg('ip-pen ip-ring', '0 0 100 40', path('M84 7C66 1.6 22 2.4 8 13 -2 21 4 33 30 36.6 60 40 92 35 97 23 101 13 88 5.4 62 4.2', 3.25, 0.62))}${note('근거?', 3.9, 'ip-side')}</span>.</li>
+      </ol>
+    </figure>
+
+    <ol class="intro-checks" aria-label="답변을 볼 때 묻는 세 가지">
+      <li data-g="1"><span class="ic-n">1</span><strong>사실과 다른가</strong><span class="ic-s">논문·숫자·인물이 실제와 같은지</span></li>
+      <li data-g="2"><span class="ic-n">2</span><strong>치우치거나 비약했나</strong><span class="ic-s">근거 없이 원인을 단정하지 않았는지</span></li>
+      <li data-g="3"><span class="ic-n">3</span><strong>지금도 맞는가</strong><span class="ic-s">날짜·제도가 그사이 바뀌지 않았는지</span></li>
+    </ol>
+
+    <div class="intro-actions">
+      <button type="button" class="primary" data-action="intro-practice">연습용 답변으로 해 보기</button>
+      ${hasWork()
+    ? `<button type="button" data-action="intro-continue">하던 작업 이어서 하기 · ${state.step}단계</button>`
+    : '<button type="button" data-action="intro-paste">내 AI 대화 붙여넣기</button>'}
+    </div>
+  </section>`;
+}
+// 화면에 들어오면 한 번 그린다. 줄인 동작이면 처음부터 다 그려진 상태(.anim 을 붙이지 않음).
+function playIntro() {
+  const root = document.getElementById('intro');
+  if (!root) return;
+  const replay = root.querySelector('.intro-replay');
+  const end = () => { replay.hidden = false; };
+  const play = () => {
+    root.classList.remove('play');
+    void root.offsetWidth; // 다시 그리기: 애니메이션 처음부터
+    root.classList.add('play');
+    replay.hidden = true;
+    clearTimeout(playIntro._t);
+    playIntro._t = setTimeout(end, 4700);
+  };
+  // 고친 곳 ↔ 세 가지 질문 잇기 (Mobbin 참고: 문장 아래 라벨이 연결되는 Giga 'how it works')
+  const link = (g) => root.querySelectorAll('[data-g]').forEach((el) => el.classList.toggle('lit', !!g && el.dataset.g === g));
+  root.addEventListener('pointerover', (e) => link(e.target.closest('[data-g]')?.dataset.g));
+  root.addEventListener('pointerleave', () => link(null));
+  root.addEventListener('focusin', (e) => link(e.target.closest('[data-g]')?.dataset.g));
+  root.addEventListener('focusout', () => link(null));
+  root.addEventListener('click', (e) => { if (e.target.closest('[data-intro="replay"]')) play(); });
+  if (reducedMotion()) { end(); return; }
+  root.classList.add('anim');
+  const sheet = root.querySelector('.intro-sheet');
+  if (!('IntersectionObserver' in window)) { play(); return; }
+  const io = new IntersectionObserver((ents) => {
+    if (ents.some((x) => x.isIntersecting)) { io.disconnect(); play(); }
+  }, { threshold: 0.35 });
+  io.observe(sheet);
+}
+
 /* ---------- 렌더 ---------- */
 function render(focus = true) {
   const views = { 1: viewStep1, 2: viewStep2, 3: viewStep3, 4: viewStep4, 5: viewStep5 };
   clearReveal();
-  $view.innerHTML = practiceNote() + views[state.step]();
+  const intro = showIntro();
+  document.body.classList.toggle('is-intro', intro);
+  $view.innerHTML = intro ? viewIntro() : practiceNote() + views[state.step]();
+  if (intro) playIntro();
   document.querySelectorAll('#stepper li').forEach((li) => {
     const n = Number(li.dataset.step);
     li.classList.toggle('current', n === state.step);
@@ -1334,6 +1424,46 @@ const actions = {
     } catch { toast('예시를 불러오지 못했습니다.'); }
   },
   'confirm-paste'() { confirmPaste(); },
+  // 5단계: 시연용 예시의 샘플 결론 (발표 시간이 없을 때)
+  'sample-conclusion'() {
+    const t = cachedExample(state.answer)?.sampleConclusion;
+    if (!t) return;
+    if (state.conclusion.trim() && state.conclusion !== t && !confirm('지금 쓴 결론을 샘플 결론으로 바꿀까요?')) return;
+    state.conclusion = t;
+    save();
+    const ta = document.querySelector('textarea[data-bind="conclusion"]');
+    if (ta) ta.value = t;
+    const box = document.getElementById('report-blocks');
+    if (box) box.innerHTML = reportBlocksHtml(analysis());
+    toast('샘플 결론을 넣었어요. 증빙서 4번에 들어갔어요.');
+  },
+  'to-doc'() {
+    document.getElementById('s5-doc')?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+  },
+  // 첫 화면 버튼
+  async 'intro-practice'() {
+    if (hasWork()) {
+      if (!confirm('지금 하던 작업을 지우고 연습용 답변으로 새로 시작할까요? (회차 기록은 남아요)')) return;
+      state = freshState();
+    }
+    introOpen = false;
+    state.introSeen = true;
+    save();
+    await actions['load-demo']({ dataset: { key: 'practice' } });
+    if (!state.answer.trim()) render(false); // 예시를 못 읽었으면 빈 1단계로
+    window.scrollTo(0, 0);
+  },
+  'intro-continue'() {
+    introOpen = false;
+    render();
+  },
+  'intro-paste'() {
+    introOpen = false;
+    state.introSeen = true;
+    save();
+    render();
+    document.querySelector('.answer-input')?.focus();
+  },
   'fill-sample'() {
     if (!applySampleVerify(analysis())) return;
     const y = window.scrollY;
@@ -1602,6 +1732,7 @@ document.getElementById('reset-menu')?.addEventListener('click', (e) => {
   const all = b.dataset.reset === 'all';
   if (all) store.del(HISTORY_KEY);
   state = freshState();
+  introOpen = false;
   save();
   e.currentTarget.open = false;
   render();
@@ -1872,6 +2003,14 @@ async function copyText(text, msg) {
   }
   toast(msg || '복사했습니다. 증빙서에 붙여 넣으세요.');
 }
+
+document.querySelector('.logo')?.addEventListener('click', (e) => {
+  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return; // 새 탭 열기는 그대로
+  e.preventDefault();
+  if (loading) return;
+  introOpen = true;
+  render();
+});
 
 document.getElementById('stepper').addEventListener('click', (e) => {
   const li = e.target.closest('li');
